@@ -2,19 +2,23 @@ package com.github.ydewolf.classes;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 import com.github.ydewolf.classes.Files.DirRef;
 import com.github.ydewolf.classes.Files.FileRef;
 
 public class FileManager {
-    private static String[] VALID_EXTENSIONS = {".jpeg", ".jpg", ".png", ".gif"};
+    private static String[] VALID_EXTENSIONS = {};
 
-    protected FileRef[] child_files;
+    protected HashMap<String, FileRef> child_files = new HashMap<>();
     protected File root_folder;
 
     public FileManager(String root_folder_path)  {
         this.root_folder = new File(root_folder_path);
-        if (!this.root_folder.exists() ||!this.root_folder.isDirectory()) {
+        if (!this.root_folder.exists() || !this.root_folder.isDirectory()) {
             System.err.println("The root folder path should point to a directory");
             return;
         }
@@ -27,7 +31,7 @@ public class FileManager {
     }
 
     public void updateChildFiles() {
-        // TODO: Optimize this using cache and linear search to not instantiate files that shouldn't be removed from the list at all
+        // I think it is optimized now
         File[] filtered_files = this.root_folder.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -35,8 +39,14 @@ public class FileManager {
                     return true;
                 }
 
+                // Skip files that are already in the child_files map
+                if (child_files.containsKey(pathname.getAbsolutePath())) {
+                    return false;
+                }
+
                 for (String extension : VALID_EXTENSIONS) {
                     if (pathname.getAbsolutePath().endsWith(extension)) {
+
                         return true;
                     }
                 }
@@ -45,31 +55,43 @@ public class FileManager {
             }
         });
 
-        // Re generate the child files variable from the filtered files
-        FileRef[] new_buffer = new FileRef[filtered_files.length];
-        for (int idx = 0; idx < new_buffer.length; idx++) {
-            File file = filtered_files[idx];
-            if (file.isDirectory()) {
-                new_buffer[idx] = DirRef.fromFile(file);
-                continue;
+        // Files that should be added to the child files
+        for (File file : filtered_files) {
+            try {
+                String file_path = file.getCanonicalPath();
+                this.child_files.put(file_path, FileManager.createRefFromFile(file));
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
-            // If not a directory
-            new_buffer[idx] = FileRef.fromFile(file);
         }
 
-        this.child_files = new_buffer;
+        // Remove files that shouldn't be there anymore
+        ArrayList<String> paths_to_remove = new ArrayList<>();
+        for (FileRef file : this.child_files.values()) {
+            if (!file.getInstance().exists()) {
+                paths_to_remove.add(file.getPath());
+            }
+        }
+
+        for (String path : paths_to_remove) {
+            this.child_files.remove(path);
+        }
     }
     
-    public FileRef[] getFiles() {
+    public HashMap<String, FileRef> getFiles() {
         return this.child_files;
     }
 
-    public String[] getFilePaths() {
-        String[] file_paths = new String[this.child_files.length];
-        for (int idx = 0; idx < file_paths.length; idx++) {
-            file_paths[idx] = this.child_files[idx].getPath();
-        }
+    public Set<String> getFilePaths() {
+        return this.child_files.keySet();
+    }
 
-        return file_paths;
+    public static FileRef createRefFromFile(File file) {
+        if (file.isDirectory()) {
+            return DirRef.fromFile(file);
+        }
+        // If not a directory
+        return FileRef.fromFile(file);
     }
 }
