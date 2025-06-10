@@ -1,13 +1,10 @@
 package com.github.ydewolf;
 
-import com.github.ydewolf.classes.FileManager;
+import com.github.ydewolf.swing.FileManagerFrame;
 
 public class Main {
     public static void main(String[] args) {
-        FileManager manager = new FileManager();
-        
-        for (String path : manager.getFilePaths()) {
-            System.out.println(path);
-        }
+        FileManagerFrame frame = new FileManagerFrame();
+        frame.init();
     }   
 }
