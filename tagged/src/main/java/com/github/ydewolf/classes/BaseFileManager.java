@@ -182,6 +182,10 @@ public abstract class BaseFileManager {
         return this.child_files;
     }
 
+    public File getFileInstance(String file_path) {
+        return this.child_files.get(file_path).getInstance();
+    }
+
     public Set<String> getFilePaths() {
         return this.child_files.keySet();
     }
