@@ -31,6 +31,10 @@ public class FileManager {
         File[] filtered_files = this.root_folder.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
+                if (VALID_EXTENSIONS.length == 0) {
+                    return true;
+                }
+
                 for (String extension : VALID_EXTENSIONS) {
                     if (pathname.getAbsolutePath().endsWith(extension)) {
                         return true;
@@ -58,5 +62,14 @@ public class FileManager {
     
     public FileRef[] getFiles() {
         return this.child_files;
+    }
+
+    public String[] getFilePaths() {
+        String[] file_paths = new String[this.child_files.length];
+        for (int idx = 0; idx < file_paths.length; idx++) {
+            file_paths[idx] = this.child_files[idx].getPath();
+        }
+
+        return file_paths;
     }
 }
