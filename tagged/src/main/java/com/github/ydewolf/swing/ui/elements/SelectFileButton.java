@@ -13,15 +13,30 @@ import javax.swing.JLabel;
 
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
+import oracle.net.aso.m;
+
 
 public class SelectFileButton extends JButton {
     public SelectFileButton(File file, int width, int height) {
         this.setLayout(new BorderLayout());
         JavaSwingUtils.setupJComponentDim(this, width, height);
 
+        // BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         try {
-            img.createGraphics().drawImage(ImageIO.read(new File(file.getAbsolutePath())).getScaledInstance(width, height, Image.SCALE_SMOOTH),0,0,null);
+            BufferedImage original = ImageIO.read(file);
+
+            int x = Math.max(((original.getWidth() - width) / 2), 0);
+            int y = Math.max(((original.getHeight() - height) / 2), 0);
+
+            width = Math.min(width, original.getWidth());
+            height = Math.min(height, original.getHeight());
+
+            // Realiza o corte
+            BufferedImage cropped = original.getSubimage(x, y, width, height);
+            img = cropped;
+            // img.createGraphics().drawImage(ImageIO.read(new File(file.getAbsolutePath())).getScaledInstance(width, height, Image.SCALE_SMOOTH),0,0,null);
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
