@@ -2,9 +2,11 @@ package com.github.ydewolf.swing.ui;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.HashMap;
 import java.util.Set;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.github.ydewolf.swing.FileManagerFrame;
 import com.github.ydewolf.swing.ui.elements.SelectFileButton;
@@ -12,38 +14,71 @@ import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
 public class FileExplorerPanel extends JPanel {
     protected FileManagerFrame manager_frame;
+    protected HashMap<String, JPanel> img_panels;
+
     final protected int IMAGE_SIZE_X = 128;
     final protected int IMAGE_SIZE_Y = 128;
 
     public FileExplorerPanel(FileManagerFrame manager, int width, int height, int border_size) {
         this.manager_frame = manager;
+        this.img_panels = new HashMap<>();
+
         JavaSwingUtils.setupJPanel(this, width, height, border_size);
         
         int column_count = Math.floorDiv(width, IMAGE_SIZE_X + 10);
         this.setLayout(new GridLayout(0, column_count));
 
-        updateContents();
+        // updateContents();
     }
 
     public void updateContents() {
-        this.removeAll();
+        // this.removeAll();
         Set<String> paths = manager_frame.getFileManager().getFilePaths();
-        // Dimension buttonSize = new JButton().getPreferredSize();
-        // this.setPreferredSize(buttonSize);
 
+        // Remove panels of images that doesn't exist anymore
+        int removed_imgs = 0;
+        for (String path_key : img_panels.keySet()) {
+            if (!paths.contains(path_key)) {
+                this.img_panels.remove(path_key);
+                removed_imgs += 1;
+                continue;
+            }
+        }
+
+        //  Add the new images
+        long total_time = 0;
+        int added_imgs = 0;
         for (String path : paths) {
+            // Exclude images that were already added
+            if (img_panels.containsKey(path)) {
+                continue;
+            }
+
+            // Generate image label
+            long start_time = System.currentTimeMillis();
+
             JPanel button_holder = new JPanel();
             JavaSwingUtils.setupJComponentDim(button_holder, IMAGE_SIZE_X, IMAGE_SIZE_Y);
             button_holder.setLayout(new FlowLayout());
-
             
             SelectFileButton select_button = new SelectFileButton(manager_frame.getFileManager().getFileInstance(path), IMAGE_SIZE_X, IMAGE_SIZE_Y);
             button_holder.add(select_button);
             
-            // JPanel panel = new JPanel(new FlowLayout());
-            // panel.add(button_holder);
-
             this.add(button_holder);
+            img_panels.put(path, button_holder);
+
+            if (this.manager_frame.getConfigs().debug_elapsed) {
+                System.out.println("IMG load elapsed time: " + (System.currentTimeMillis() - start_time) + "ms");
+                total_time += (System.currentTimeMillis() - start_time);
+                added_imgs += 1;
+            }
+
+            SwingUtilities.updateComponentTreeUI(button_holder);
+        }
+
+
+        if (this.manager_frame.getConfigs().debug_elapsed) {
+            System.out.println("Total time to load images: " + total_time + "ms | Images loaded: " + added_imgs + " | Removed images: " + removed_imgs);
         }
     }
 }

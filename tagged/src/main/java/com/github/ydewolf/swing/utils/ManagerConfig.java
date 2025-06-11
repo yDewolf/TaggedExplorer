@@ -7,6 +7,7 @@ public class ManagerConfig {
     public File root_folder = new File(System.getProperty("user.home") + "\\Pictures");
     public boolean recursive = true;
     public boolean debug_mode = false;
+    public boolean debug_elapsed = true;
 
     public String[] VALID_EXTENSIONS = {".jpeg", ".jpg", ".png", ".gif"};
     public String[] EXCLUDED_EXTENSIONS = {};

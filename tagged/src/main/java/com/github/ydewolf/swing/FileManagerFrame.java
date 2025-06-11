@@ -29,9 +29,12 @@ public class FileManagerFrame extends JFrame {
 
     protected final int DEFAULT_BUTTON_HEIGHT = 20;
 
+    protected Thread file_loading_thread;
+
     protected FileExplorerPanel file_explorer_panel;
 
     public FileManagerFrame() {
+        createNewUpdateThread();
         this.setup();
     }
 
@@ -44,6 +47,7 @@ public class FileManagerFrame extends JFrame {
         
         
         this.setVisible(true);
+        this.updateFileExplorer();
     }
 
     private JComponent createLeftPanel() {
@@ -72,7 +76,15 @@ public class FileManagerFrame extends JFrame {
         refresh_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateFileExplorer();
+                if (file_loading_thread.isAlive()) {
+                    return;
+                }
+
+                if (file_loading_thread.getState() != Thread.State.NEW) {
+                    createNewUpdateThread();
+                }
+
+                file_loading_thread.start();
             }
             
         });
@@ -99,18 +111,23 @@ public class FileManagerFrame extends JFrame {
         this.file_manager = new FileManager();
         this.updateFileManagerConfigs();
 
-        this.file_manager.defaultUpdateChildren();
+        // this.file_manager.defaultUpdateChildren();
     }
 
     // Updates
 
     public void updateFileExplorer() {
         this.file_manager.defaultUpdateChildren();
-        
-
+        this.file_explorer_panel.updateContents();
     }
 
     // Utils
+
+    public Thread createNewUpdateThread() {
+        this.file_loading_thread = new Thread(() -> {this.updateFileExplorer();});
+        
+        return this.file_loading_thread;
+    }
 
     public void updateFileManagerConfigs() {
         this.file_manager.loadConfig(config);
