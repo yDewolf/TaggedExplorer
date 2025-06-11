@@ -53,12 +53,13 @@ public class FileManagerFrame extends JFrame {
     private JComponent createLeftPanel() {
         JPanel left_panel = JavaSwingUtils.createPanel(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y, DEFAULT_BORDER_SIZE);
         left_panel.setLayout(new BorderLayout());
+        left_panel.setBorder(null);
 
         FileExplorerPanel explorer_panel = new FileExplorerPanel(this, SIZE_X - SIDE_PANEL_SIZE, SIZE_Y, DEFAULT_BORDER_SIZE);
         this.file_explorer_panel = explorer_panel;
 
         JScrollPane explorer_view = new JScrollPane(this.file_explorer_panel);
-        explorer_view.setMaximumSize(new Dimension(SIZE_X - SIDE_PANEL_SIZE, 200));
+        explorer_view.setMaximumSize(new Dimension(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y));
         explorer_view.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         left_panel.add(explorer_view);

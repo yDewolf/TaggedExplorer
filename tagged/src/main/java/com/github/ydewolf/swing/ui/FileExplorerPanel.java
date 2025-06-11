@@ -24,7 +24,7 @@ public class FileExplorerPanel extends JPanel {
         this.manager_frame = manager;
         this.img_panels = new HashMap<>();
 
-        JavaSwingUtils.setupJPanel(this, width, height, border_size);
+        JavaSwingUtils.setupJComponentDim(this, width, height);
         
         int column_count = Math.floorDiv(width, IMAGE_SIZE_X + 10);
         this.setLayout(new GridLayout(0, column_count));
