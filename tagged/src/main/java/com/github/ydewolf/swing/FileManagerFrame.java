@@ -83,6 +83,7 @@ public class FileManagerFrame extends JFrame {
         JScrollPane explorer_view = new JScrollPane(this.file_explorer_panel);
         explorer_view.setMaximumSize(new Dimension(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y));
         explorer_view.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        explorer_view.getVerticalScrollBar().setUnitIncrement(16);
 
         left_panel.add(explorer_view);
 

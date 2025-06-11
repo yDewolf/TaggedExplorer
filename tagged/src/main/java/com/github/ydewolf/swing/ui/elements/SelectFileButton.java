@@ -1,54 +1,40 @@
 package com.github.ydewolf.swing.ui.elements;
 
 import java.awt.BorderLayout;
-import java.awt.Image;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
-import oracle.net.aso.m;
-
-
 public class SelectFileButton extends JButton {
-    public SelectFileButton(File file, int width, int height) {
+
+    public SelectFileButton(File file, int target_width, int target_height, int max_characters) {
         this.setLayout(new BorderLayout());
-        JavaSwingUtils.setupJComponentDim(this, width, height);
+        this.setToolTipText(file.getAbsolutePath());
 
-        // BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        JavaSwingUtils.setupJComponentDim(this, target_width, target_height);
+
         try {
-            BufferedImage original = ImageIO.read(file);
-
-            int x = Math.max(((original.getWidth() - width) / 2), 0);
-            int y = Math.max(((original.getHeight() - height) / 2), 0);
-
-            width = Math.min(width, original.getWidth());
-            height = Math.min(height, original.getHeight());
-
-            // Realiza o corte
-            BufferedImage cropped = original.getSubimage(x, y, width, height);
-            img = cropped;
-            // img.createGraphics().drawImage(ImageIO.read(new File(file.getAbsolutePath())).getScaledInstance(width, height, Image.SCALE_SMOOTH),0,0,null);
+            BufferedImage img = JavaSwingUtils.cropImage(file, target_width, target_height);
             
+            JLabel label = new JLabel(new ImageIcon(img));
+            this.add(label, BorderLayout.CENTER);
+
+            JLabel name_label = new JLabel();
+            name_label.setPreferredSize(new Dimension(target_width, 20));
+            name_label.setText(JavaSwingUtils.truncateString(name_label, file.getName(), max_characters));
+            this.add(name_label, BorderLayout.SOUTH);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        JLabel label = new JLabel(new ImageIcon(img));
-
-        // Old method
-        // ImageIcon icon = new ImageIcon(file.getAbsolutePath());
-
-        // JLabel label = new JLabel(new ImageIcon(icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
-        this.add(label, BorderLayout.CENTER);
-
-        // JLabel name_label = new JLabel(file.getName());
-        // this.add(name_label, BorderLayout.SOUTH);
     }
+
+    
 }

@@ -1,11 +1,13 @@
 package com.github.ydewolf.swing.ui;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -58,6 +60,12 @@ public class FileExplorerPanel extends JPanel {
         //  Add the new images
         long total_time = 0;
         int added_imgs = 0;
+
+        // Label max characters
+        JLabel sample_label = new JLabel();
+        sample_label.setPreferredSize(new Dimension(IMAGE_SIZE_X, 20));
+        int max_characters = JavaSwingUtils.getMaxCharacters(sample_label, "...");
+
         for (String path : paths) {
             // Exclude images that were already added
             if (img_panels.containsKey(path)) {
@@ -71,7 +79,7 @@ public class FileExplorerPanel extends JPanel {
             JavaSwingUtils.setupJComponentDim(button_holder, IMAGE_SIZE_X, IMAGE_SIZE_Y);
             button_holder.setLayout(new FlowLayout());
             
-            SelectFileButton select_button = new SelectFileButton(manager_frame.getFileManager().getFileInstance(path), IMAGE_SIZE_X, IMAGE_SIZE_Y);
+            SelectFileButton select_button = new SelectFileButton(manager_frame.getFileManager().getFileInstance(path), IMAGE_SIZE_X, IMAGE_SIZE_Y, max_characters);
             button_holder.add(select_button);
             
             this.add(button_holder);
@@ -85,7 +93,6 @@ public class FileExplorerPanel extends JPanel {
 
             SwingUtilities.updateComponentTreeUI(button_holder);
         }
-
 
         if (this.manager_frame.getConfigs().debug_elapsed) {
             System.out.println("Total time to load images: " + total_time + "ms | Images loaded: " + added_imgs + " | Removed images: " + removed_imgs);
