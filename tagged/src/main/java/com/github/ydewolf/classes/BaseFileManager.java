@@ -36,7 +36,7 @@ public abstract class BaseFileManager {
         this.EXCLUDED_EXTENSIONS = config.EXCLUDED_EXTENSIONS;
         this.EXCLUDED_FOLDERS = config.EXCLUDED_FOLDERS;
 
-        this.root_folder = config.root_folder;
+        this.root_folder = config.getRoot();
     }
 
 
@@ -80,7 +80,7 @@ public abstract class BaseFileManager {
         // Remove files that shouldn't be there anymore
         ArrayList<String> paths_to_remove = new ArrayList<>();
         for (FileRef file : this.child_files.values()) {
-            if (!file.getInstance().exists()) {
+            if (!file.getPath().contains(this.root_folder.getAbsolutePath())) {
                 paths_to_remove.add(file.getPath());
             }
         }
@@ -128,6 +128,11 @@ public abstract class BaseFileManager {
             for (FileRef fileRef : files_to_add) {
                 files.add(fileRef);
             }
+        }
+
+        if (folder_files == null) {
+            System.err.println("Folder files is null | Caused by an I/O Error (probably) | Path: " + parent_folder.getAbsolutePath());
+            return files;
         }
 
         for (File file : folder_files) {
