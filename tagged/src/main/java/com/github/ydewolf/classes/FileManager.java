@@ -20,6 +20,7 @@ public class FileManager extends BaseFileManager {
         super.loadConfig(config);
 
         this.recursive = config.recursive;
+        this.debug_mode = config.debug_mode;
     }
 
     public void defaultUpdateChildren() {

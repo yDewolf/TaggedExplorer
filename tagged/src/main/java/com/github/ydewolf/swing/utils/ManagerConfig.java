@@ -4,7 +4,7 @@ import java.io.File;
 
 
 public class ManagerConfig {
-    public File root_folder = new File(".");
+    public File root_folder = new File(System.getProperty("user.home") + "\\OneDrive\\Imagens");
     public boolean recursive = false;
     public boolean debug_mode = false;
 

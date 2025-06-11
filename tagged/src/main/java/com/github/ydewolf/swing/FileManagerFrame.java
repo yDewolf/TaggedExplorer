@@ -1,13 +1,17 @@
 package com.github.ydewolf.swing;
 
+import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Dimension;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.github.ydewolf.classes.FileManager;
 import com.github.ydewolf.swing.ui.FileExplorerPanel;
@@ -35,6 +39,7 @@ public class FileManagerFrame extends JFrame {
     // UI Creation + initialization
 
     public void init() {
+        // createLeftPanel();
         this.add(createLeftPanel());
         this.add(createRightPanel());
         
@@ -42,10 +47,18 @@ public class FileManagerFrame extends JFrame {
         this.setVisible(true);
     }
 
-    private FileExplorerPanel createLeftPanel() {
-        // Panel Creation
-        FileExplorerPanel left_panel = new FileExplorerPanel(this, SIZE_X - SIDE_PANEL_SIZE, SIZE_Y, DEFAULT_BORDER_SIZE);
-        this.file_explorer_panel = left_panel;
+    private JComponent createLeftPanel() {
+        JPanel left_panel = JavaSwingUtils.createPanel(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y, DEFAULT_BORDER_SIZE);
+        left_panel.setLayout(new BorderLayout());
+
+        FileExplorerPanel explorer_panel = new FileExplorerPanel(this, SIZE_X - SIDE_PANEL_SIZE, SIZE_Y, DEFAULT_BORDER_SIZE);
+        this.file_explorer_panel = explorer_panel;
+
+        JScrollPane explorer_view = new JScrollPane(this.file_explorer_panel);
+        explorer_view.setMaximumSize(new Dimension(SIZE_X - SIDE_PANEL_SIZE, 200));
+        explorer_view.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        left_panel.add(explorer_view);
 
         return left_panel;
     }
