@@ -2,6 +2,7 @@ package com.github.ydewolf.swing.ui;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -37,14 +38,23 @@ public class FileExplorerPanel extends JPanel {
 
         // Remove panels of images that doesn't exist anymore
         int removed_imgs = 0;
+        ArrayList<String> paths_to_remove = new ArrayList<>();
         for (String path_key : img_panels.keySet()) {
             if (!paths.contains(path_key)) {
-                this.img_panels.remove(path_key);
+                paths_to_remove.add(path_key);
                 removed_imgs += 1;
                 continue;
             }
         }
-
+        
+        for (String path : paths_to_remove) {
+            JPanel panel = this.img_panels.get(path);
+            this.remove(panel);
+            
+            this.img_panels.remove(path);
+        }
+        SwingUtilities.updateComponentTreeUI(this);
+        
         //  Add the new images
         long total_time = 0;
         int added_imgs = 0;
