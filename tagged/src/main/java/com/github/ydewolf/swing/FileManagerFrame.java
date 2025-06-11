@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 
 import com.github.ydewolf.classes.FileManager;
 import com.github.ydewolf.swing.ui.FileExplorerPanel;
+import com.github.ydewolf.swing.ui.elements.DebugPanel;
 import com.github.ydewolf.swing.ui.elements.menu_items.OpenFolderMenuItem;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 import com.github.ydewolf.swing.utils.ManagerConfig;
@@ -26,7 +27,7 @@ public class FileManagerFrame extends JFrame {
     protected ManagerConfig config;
 
     protected final int SIZE_X = 800;
-    protected final int SIZE_Y = 600;
+    protected final int SIZE_Y = 650;
 
     protected final int SIDE_PANEL_SIZE = 250;
     protected final int DEFAULT_BORDER_SIZE = 5;
@@ -40,9 +41,9 @@ public class FileManagerFrame extends JFrame {
 
     protected FileExplorerPanel file_explorer_panel;
     protected JPanel horizontal_panel;
+    protected DebugPanel debug_panel;
 
     public FileManagerFrame() {
-        createNewUpdateThread();
         this.setup();
     }
 
@@ -125,11 +126,15 @@ public class FileManagerFrame extends JFrame {
 
         this.add(createNavbar());
         
-        JPanel horizontal_panel = JavaSwingUtils.createPanel(SIZE_X, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
-        horizontal_panel.setLayout(new BoxLayout(horizontal_panel, BoxLayout.X_AXIS));
-        this.horizontal_panel = horizontal_panel;
+        this.horizontal_panel = JavaSwingUtils.createPanel(SIZE_X, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
+        this.horizontal_panel.setLayout(new BoxLayout(horizontal_panel, BoxLayout.X_AXIS));
 
         this.add(this.horizontal_panel);
+
+        this.debug_panel = new DebugPanel(SIZE_X, NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
+        if (this.config.debug_menu) {
+            this.add(this.debug_panel);
+        }
         // this.add(file_dialog);
     }
 
@@ -147,6 +152,33 @@ public class FileManagerFrame extends JFrame {
     public void updateFileExplorer() {
         this.file_manager.defaultUpdateChildren();
         this.file_explorer_panel.updateContents();
+    }
+
+    public void updateFileManagerConfigs(ManagerConfig new_config) {
+        this.file_manager.loadConfig(new_config);
+        this.config = new_config;
+
+        if (debug_panel != null) {
+            if (this.config.debug_menu && !this.debug_panel.isDisplayable()) {
+                this.add(this.debug_panel);
+            } else {
+                this.remove(this.debug_panel);
+            }
+        }
+
+        if (this.config.getChangedRoot()) {
+            startUpdateThread();
+        }
+    }
+
+    public void updateFileManagerConfigs() {
+        this.updateFileManagerConfigs(this.config);
+    }
+
+    // Other
+
+    public DebugPanel getDebugPanel() {
+        return this.debug_panel;
     }
 
     // Utils
@@ -167,19 +199,6 @@ public class FileManagerFrame extends JFrame {
         this.file_loading_thread = new Thread(() -> {this.updateFileExplorer();});
         
         return this.file_loading_thread;
-    }
-
-    public void updateFileManagerConfigs(ManagerConfig new_config) {
-        this.file_manager.loadConfig(new_config);
-        this.config = new_config;
-
-        if (this.config.getChangedRoot()) {
-            startUpdateThread();
-        }
-    }
-
-    public void updateFileManagerConfigs() {
-        this.updateFileManagerConfigs(this.config);
     }
 
     public FileManager getFileManager() {

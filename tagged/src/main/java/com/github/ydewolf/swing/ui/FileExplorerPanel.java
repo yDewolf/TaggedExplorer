@@ -20,7 +20,7 @@ public class FileExplorerPanel extends JPanel {
     protected HashMap<String, JPanel> img_panels;
 
     final protected int IMAGE_SIZE_X = 128;
-    final protected int IMAGE_SIZE_Y = 128;
+    final protected int IMAGE_SIZE_Y = 96;
 
     public FileExplorerPanel(FileManagerFrame manager, int width, int height, int border_size) {
         this.manager_frame = manager;
@@ -94,7 +94,14 @@ public class FileExplorerPanel extends JPanel {
             SwingUtilities.updateComponentTreeUI(button_holder);
         }
 
+        if (this.manager_frame.getConfigs().debug_menu) {
+            this.manager_frame.getDebugPanel().setElapsedTimeText(total_time);
+            this.manager_frame.getDebugPanel().setLoadedImagesText(added_imgs);
+            this.manager_frame.getDebugPanel().setRemovedImagesText(removed_imgs);
+        }
+
         if (this.manager_frame.getConfigs().debug_elapsed) {
+
             System.out.println("Total time to load images: " + total_time + "ms | Images loaded: " + added_imgs + " | Removed images: " + removed_imgs);
         }
     }
