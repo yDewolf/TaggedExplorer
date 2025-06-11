@@ -4,8 +4,8 @@ import java.io.File;
 
 
 public class ManagerConfig {
-    public File root_folder = new File(System.getProperty("user.home") + "\\OneDrive\\Imagens");
-    public boolean recursive = false;
+    public File root_folder = new File(System.getProperty("user.home") + "\\Pictures");
+    public boolean recursive = true;
     public boolean debug_mode = false;
 
     public String[] VALID_EXTENSIONS = {".jpeg", ".jpg", ".png", ".gif"};

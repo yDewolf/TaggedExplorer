@@ -1,10 +1,12 @@
 package com.github.ydewolf.swing.ui.elements;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,8 +19,18 @@ public class SelectFileButton extends JButton {
         this.setLayout(new BorderLayout());
         JavaSwingUtils.setupJComponentDim(this, width, height);
 
-        ImageIcon icon = new ImageIcon(file.getAbsolutePath());
-        JLabel label = new JLabel(new ImageIcon(icon.getImage().getScaledInstance(width, height, Image.SCALE_FAST)));
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        try {
+            img.createGraphics().drawImage(ImageIO.read(new File(file.getAbsolutePath())).getScaledInstance(width, height, Image.SCALE_SMOOTH),0,0,null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JLabel label = new JLabel(new ImageIcon(img));
+
+        // Old method
+        // ImageIcon icon = new ImageIcon(file.getAbsolutePath());
+
+        // JLabel label = new JLabel(new ImageIcon(icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         this.add(label, BorderLayout.CENTER);
 
         // JLabel name_label = new JLabel(file.getName());

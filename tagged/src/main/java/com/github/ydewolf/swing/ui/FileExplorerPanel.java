@@ -1,17 +1,10 @@
 package com.github.ydewolf.swing.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.Set;
-import java.util.concurrent.Flow;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 import com.github.ydewolf.swing.FileManagerFrame;
 import com.github.ydewolf.swing.ui.elements.SelectFileButton;
@@ -43,6 +36,7 @@ public class FileExplorerPanel extends JPanel {
             JavaSwingUtils.setupJComponentDim(button_holder, IMAGE_SIZE_X, IMAGE_SIZE_Y);
             button_holder.setLayout(new FlowLayout());
 
+            
             SelectFileButton select_button = new SelectFileButton(manager_frame.getFileManager().getFileInstance(path), IMAGE_SIZE_X, IMAGE_SIZE_Y);
             button_holder.add(select_button);
             
