@@ -26,6 +26,9 @@ public class FileManagerFrame extends JFrame {
     protected FileManager file_manager;
     protected ManagerConfig config;
 
+    protected final String WINDOW_TITLE = "TaggedExplorer-0.0.1";
+    protected final String VERSION_TAG = "v0.0.1-ALPHA";
+
     protected final int SIZE_X = 800;
     protected final int SIZE_Y = 650;
 
@@ -52,7 +55,6 @@ public class FileManagerFrame extends JFrame {
     public void init() {
         this.horizontal_panel.add(createLeftPanel());
         this.horizontal_panel.add(createRightPanel());
-        
         
         this.setVisible(true);
         this.updateFileExplorer();
@@ -115,6 +117,7 @@ public class FileManagerFrame extends JFrame {
         this.setupFileManager();
 
         this.setResizable(false);
+        this.setTitle(this.WINDOW_TITLE);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         // Sizing:
@@ -126,16 +129,18 @@ public class FileManagerFrame extends JFrame {
 
         this.add(createNavbar());
         
+        // Create the main Horizontal Panel
         this.horizontal_panel = JavaSwingUtils.createPanel(SIZE_X, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
         this.horizontal_panel.setLayout(new BoxLayout(horizontal_panel, BoxLayout.X_AXIS));
 
         this.add(this.horizontal_panel);
 
+        // Create Debug Panel
         this.debug_panel = new DebugPanel(SIZE_X, NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
         if (this.config.debug_menu) {
             this.add(this.debug_panel);
+            this.debug_panel.setVersionText(VERSION_TAG);
         }
-        // this.add(file_dialog);
     }
 
     private void setupFileManager() {

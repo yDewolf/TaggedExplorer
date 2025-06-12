@@ -101,7 +101,6 @@ public class FileExplorerPanel extends JPanel {
         }
 
         if (this.manager_frame.getConfigs().debug_elapsed) {
-
             System.out.println("Total time to load images: " + total_time + "ms | Images loaded: " + added_imgs + " | Removed images: " + removed_imgs);
         }
     }
