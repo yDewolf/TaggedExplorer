@@ -1,4 +1,4 @@
-package com.github.ydewolf.swing.ui;
+package com.github.ydewolf.swing.ui.FileExplorerPanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 
 import com.github.ydewolf.enums.DebugTypes;
 import com.github.ydewolf.swing.FileManagerFrame;
-import com.github.ydewolf.swing.ui.elements.SelectFileButton;
+import com.github.ydewolf.swing.ui.FileExplorerPanel.elements.SelectFileButton;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
 public class FileExplorerPanel extends JPanel {
@@ -29,7 +29,7 @@ public class FileExplorerPanel extends JPanel {
         this.img_panels = new HashMap<>();
 
         JavaSwingUtils.setupJComponentDim(this, width, height);
-        int column_count = Math.floorDiv(width, IMAGE_SIZE_X + 10);
+        int column_count = Math.floorDiv(width, IMAGE_SIZE_X + (border_size * 2)) - 1;
         this.setLayout(new GridLayout(0, column_count));
 
         // updateContents();

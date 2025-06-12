@@ -1,10 +1,7 @@
 package com.github.ydewolf.swing;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
@@ -19,7 +16,9 @@ import com.github.ydewolf.classes.FileManager;
 import com.github.ydewolf.classes.utils.config.BaseManagerConfig;
 import com.github.ydewolf.classes.utils.config.ManagerConfig;
 import com.github.ydewolf.enums.DebugTypes;
-import com.github.ydewolf.swing.ui.FileExplorerPanel;
+import com.github.ydewolf.swing.ui.FileExplorerPanel.FileExplorerPanel;
+import com.github.ydewolf.swing.ui.FileExplorerPanel.parts.FileExplorerTopPanel;
+import com.github.ydewolf.swing.ui.FileInfoPanel.FileInfoPanel;
 import com.github.ydewolf.swing.ui.elements.DebugPanel;
 import com.github.ydewolf.swing.ui.elements.menu_items.OpenFolderMenuItem;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
@@ -31,13 +30,18 @@ public class FileManagerFrame extends JFrame {
     protected final String WINDOW_TITLE = "TaggedExplorer-0.0.1";
     protected final String VERSION_TAG = "v0.0.1-ALPHA";
 
-    protected final int SIZE_X = 800;
-    protected final int SIZE_Y = 650;
+    // Scales only the window size
+    // Also updates SIZE_X and SIZE_Y
+    protected final double SCALE = 0.75;
 
-    protected final int SIDE_PANEL_SIZE = 250;
+    protected final int SIZE_X = (int) Math.floor(1080 * SCALE);
+    protected final int SIZE_Y = (int) Math.floor(720 * SCALE);
+
+
+    protected final int SIDE_PANEL_SIZE = 350;
     protected final int DEFAULT_BORDER_SIZE = 5;
 
-    protected final int DEFAULT_BUTTON_HEIGHT = 20;
+    public final int DEFAULT_BUTTON_HEIGHT = 20;
     protected final int NAVBAR_HEIGHT = 25;
 
     protected Thread file_loading_thread;
@@ -45,6 +49,8 @@ public class FileManagerFrame extends JFrame {
     protected JFileChooser file_dialog;
 
     protected FileExplorerPanel file_explorer_panel;
+    protected FileInfoPanel file_info_panel;
+
     protected JPanel horizontal_panel;
     protected DebugPanel debug_panel;
 
@@ -55,8 +61,9 @@ public class FileManagerFrame extends JFrame {
     // UI Creation + initialization
 
     public void init() {
-        this.horizontal_panel.add(createLeftPanel());
-        this.horizontal_panel.add(createRightPanel());
+        this.file_info_panel = createFileInfoPanel();
+        this.horizontal_panel.add(this.file_info_panel);
+        this.horizontal_panel.add(createFileExplorerPanel());
         
         this.setVisible(true);
         this.updateFileExplorer();
@@ -77,40 +84,42 @@ public class FileManagerFrame extends JFrame {
         return navbar;
     }
 
-    private JComponent createLeftPanel() {
-        JPanel left_panel = JavaSwingUtils.createPanel(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y, DEFAULT_BORDER_SIZE);
-        left_panel.setBorder(null);
-        left_panel.setLayout(new BorderLayout());
+    private JComponent createFileExplorerPanel() {
+        JPanel panel = JavaSwingUtils.createPanel(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
+        panel.setBorder(null);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        FileExplorerPanel explorer_panel = new FileExplorerPanel(this, SIZE_X - SIDE_PANEL_SIZE, SIZE_Y, DEFAULT_BORDER_SIZE);
+        panel.add(new FileExplorerTopPanel(this, SIZE_X - SIDE_PANEL_SIZE, NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE));
+        
+        // Setup FileExplorerPanel view
+
+        // JPanel explorer_holder = JavaSwingUtils.createPanel(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
+        // explorer_holder.setBorder(null);
+        // explorer_holder.setLayout(new BorderLayout());
+        
+        // panel.add(explorer_holder);
+    
+        FileExplorerPanel explorer_panel = new FileExplorerPanel(this, SIZE_X - SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT * 2, DEFAULT_BORDER_SIZE);
         this.file_explorer_panel = explorer_panel;
 
         JScrollPane explorer_view = new JScrollPane(this.file_explorer_panel);
-        explorer_view.setPreferredSize(new Dimension(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y));
+        explorer_view.setPreferredSize(new Dimension(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT * 2));
         explorer_view.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         explorer_view.getVerticalScrollBar().setUnitIncrement(16);
 
-        left_panel.add(explorer_view);
+        panel.add(explorer_view, BorderLayout.CENTER);
 
-        return left_panel;
+
+        return panel;
     }
 
-    private JPanel createRightPanel() {
+    private FileInfoPanel createFileInfoPanel() {
         // Panel Creation
-        JPanel right_panel = JavaSwingUtils.createPanel(SIDE_PANEL_SIZE, SIZE_Y, DEFAULT_BORDER_SIZE);
-        Button refresh_button = new Button("Refresh");
-        refresh_button.setMaximumSize(new Dimension(SIDE_PANEL_SIZE, this.DEFAULT_BUTTON_HEIGHT));
-        right_panel.add(refresh_button);
+        FileInfoPanel panel = new FileInfoPanel(this, SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
+        // JPanel panel = JavaSwingUtils.createPanel(SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
 
-        refresh_button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startUpdateThread();
-            }
-            
-        });
 
-        return right_panel;
+        return panel;
     }
 
     // Frame setup
@@ -171,6 +180,10 @@ public class FileManagerFrame extends JFrame {
             } else {
                 this.remove(this.debug_panel);
             }
+        }
+
+        if (this.file_info_panel != null) {
+            this.file_info_panel.updateFolderInfo();
         }
 
         if (this.config.getChangedRoot()) {

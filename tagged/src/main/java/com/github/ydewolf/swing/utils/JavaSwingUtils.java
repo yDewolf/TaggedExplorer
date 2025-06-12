@@ -50,7 +50,7 @@ public class JavaSwingUtils {
             return text;
         }
 
-        return text.substring(0, max_characters);
+        return text.substring(0, max_characters) + "...";
     }
 
     // Returns the maximum amount of characters a JLabel can support

@@ -18,6 +18,7 @@ public abstract class BaseFileManager {
     protected String[] EXCLUDED_FOLDERS = {".git", ".vscode"};
 
     protected HashMap<String, FileRef> child_files = new HashMap<>();
+    protected HashMap<String, DirRef> child_folders = new HashMap<>();
     protected File root_folder;
 
     public BaseFileManager(String root_folder_path)  {
@@ -42,6 +43,8 @@ public abstract class BaseFileManager {
 
 
     protected void updateChildFiles() {
+        this.child_folders.clear();
+
         // I think it is optimized now
         File[] filtered_files = this.root_folder.listFiles(new FileFilter() {
             @Override
@@ -74,8 +77,8 @@ public abstract class BaseFileManager {
         }
     }
     
-
     protected void updateChildFilesRecursive() {
+        this.child_folders.clear();
         ArrayList<FileRef> all_files = this.getChildrenRecursive(root_folder);
 
         // Remove files that shouldn't be there anymore
@@ -125,6 +128,8 @@ public abstract class BaseFileManager {
         // Recursion
         ArrayList<FileRef> files = new ArrayList<>();
         for (File directory : folders_to_look) {
+            this.child_folders.put(directory.getAbsolutePath(), (DirRef) BaseFileManager.createRefFromFile(directory));
+
             ArrayList<FileRef> files_to_add = this.getChildrenRecursive(directory);
             for (FileRef fileRef : files_to_add) {
                 files.add(fileRef);

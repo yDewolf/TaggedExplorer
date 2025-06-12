@@ -1,4 +1,4 @@
-package com.github.ydewolf.swing.ui.elements;
+package com.github.ydewolf.swing.ui.FileExplorerPanel.elements;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -11,10 +11,12 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import com.github.ydewolf.classes.Files.utils.FileUtils;
-import com.github.ydewolf.classes.static_classes.FileFormats;
+import com.github.ydewolf.static_classes.FileFormats;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
 public class SelectFileButton extends JButton {
+    protected File related_file;
+
     protected JLabel img_label;
     protected JLabel name_label;
 
@@ -45,16 +47,28 @@ public class SelectFileButton extends JButton {
     }
 
     public void loadFile(File file) {
+        this.related_file = file;
+        name_label.setText(JavaSwingUtils.truncateString(name_label, file.getName(), max_characters));
+
         if (FileUtils.checkFileExtension(file.getName(), FileFormats.IMAGE_LIKE_EXTENSIONS)) {
             try {
                 BufferedImage img = FileUtils.cropImage(file, this.width, this.height);
-                this.img_label.setIcon(new ImageIcon(img));
+                if (img != null) {
+                    this.img_label.setIcon(new ImageIcon(img));
+                }
+                return;
+
             } catch (IOException e) {
                 System.err.println(e.getMessage());
-                e.printStackTrace();
+                System.err.println("Yep. I can't access this image | IOException");
+                return;
+                // e.printStackTrace();
             }
         }
 
-        name_label.setText(JavaSwingUtils.truncateString(name_label, file.getName(), max_characters));
+        // Remove the icon if it is a text file
+        if (this.img_label.getIcon() != null) {
+            this.img_label.setIcon(null);
+        }
     }
 }

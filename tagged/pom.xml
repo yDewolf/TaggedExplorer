@@ -13,19 +13,6 @@
         <maven.compiler.target>21</maven.compiler.target>
     </properties>
 
-    <!-- <dependencies>
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.36.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc8</artifactId>
-            <version>19.18.0.0</version>
-        </dependency>
-    </dependencies> -->
-
     <build>
         <plugins>
             <plugin>

@@ -40,6 +40,10 @@ public class FileUtils {
     
     public static BufferedImage cropImage(File file, int target_width, int target_height) throws IOException {
         BufferedImage original = ImageIO.read(file);
+        if (original == null) {
+            System.err.println("WARNING: Something went wrong while reading file: " + file.getAbsolutePath() + " | BufferedImage is null");
+            return original;
+        }
 
         double scale = Math.max(
             (double) target_width / original.getWidth(),
