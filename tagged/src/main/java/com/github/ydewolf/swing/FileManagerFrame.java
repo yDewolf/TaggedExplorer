@@ -184,6 +184,12 @@ public class FileManagerFrame extends JFrame {
     // Utils
 
     public void startUpdateThread() {
+        if (file_loading_thread == null) {
+            createNewUpdateThread();
+            file_loading_thread.start();
+            return;
+        }
+
         if (file_loading_thread.isAlive()) {
             return;
         }
