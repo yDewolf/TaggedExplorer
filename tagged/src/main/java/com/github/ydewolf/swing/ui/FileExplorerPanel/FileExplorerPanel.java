@@ -40,17 +40,18 @@ public class FileExplorerPanel extends JPanel {
         Set<String> paths = manager_frame.getFileManager().getFilePaths();
 
         // Remove panels of images that doesn't exist anymore
-        int removed_imgs = 0;
         ArrayList<String> paths_to_remove = new ArrayList<>();
         for (String path_key : img_panels.keySet()) {
             if (!paths.contains(path_key)) {
                 paths_to_remove.add(path_key);
-                removed_imgs += 1;
                 continue;
             }
         }
         
+        int removed_imgs = 0;
         for (String path : paths_to_remove) {
+            removed_imgs += 1;
+            
             JPanel panel = this.img_panels.get(path);
             this.remove(panel);
             

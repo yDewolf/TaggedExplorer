@@ -84,7 +84,7 @@ public abstract class BaseFileManager {
         // Remove files that shouldn't be there anymore
         ArrayList<String> paths_to_remove = new ArrayList<>();
         for (FileRef file : this.child_files.values()) {
-            if (!file.getPath().contains(this.root_folder.getAbsolutePath())) {
+            if (!file.getPath().contains(this.root_folder.getAbsolutePath()) || !file.getInstance().exists()) {
                 paths_to_remove.add(file.getPath());
             }
         }
