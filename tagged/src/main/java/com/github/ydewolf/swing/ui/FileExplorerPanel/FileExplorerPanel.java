@@ -51,7 +51,7 @@ public class FileExplorerPanel extends JPanel {
         int removed_imgs = 0;
         for (String path : paths_to_remove) {
             removed_imgs += 1;
-            
+
             JPanel panel = this.img_panels.get(path);
             this.remove(panel);
             
@@ -98,6 +98,11 @@ public class FileExplorerPanel extends JPanel {
 
             total_time += (System.currentTimeMillis() - start_time);
             added_imgs += 1;
+
+            if (this.manager_frame.getConfigs().getDebug(DebugTypes.DEBUG_MENU)) {
+                this.manager_frame.getDebugPanel().setElapsedTimeText(total_time);
+                this.manager_frame.getDebugPanel().setLoadedImagesText(added_imgs);
+            }
 
             SwingUtilities.updateComponentTreeUI(button_holder);
         }

@@ -1,6 +1,5 @@
 package com.github.ydewolf.swing;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.BoxLayout;
@@ -37,12 +36,14 @@ public class FileManagerFrame extends JFrame {
     protected final int SIZE_X = (int) Math.floor(1080 * SCALE);
     protected final int SIZE_Y = (int) Math.floor(720 * SCALE);
 
-
     protected final int SIDE_PANEL_SIZE = 350;
+    
     protected final int DEFAULT_BORDER_SIZE = 5;
-
+    
     public final int DEFAULT_BUTTON_HEIGHT = 20;
     protected final int NAVBAR_HEIGHT = 25;
+    
+    protected final int HORIZONTAL_PANEL_HEIGHT = SIZE_Y - (NAVBAR_HEIGHT * 2) - (DEFAULT_BORDER_SIZE * 2);
 
     protected Thread file_loading_thread;
 
@@ -85,29 +86,24 @@ public class FileManagerFrame extends JFrame {
     }
 
     private JComponent createFileExplorerPanel() {
-        JPanel panel = JavaSwingUtils.createPanel(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
+        int width = SIZE_X - SIDE_PANEL_SIZE;
+        JPanel panel = JavaSwingUtils.createPanel(width, HORIZONTAL_PANEL_HEIGHT, DEFAULT_BORDER_SIZE);
         panel.setBorder(null);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        panel.add(new FileExplorerTopPanel(this, SIZE_X - SIDE_PANEL_SIZE, NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE));
+        panel.add(new FileExplorerTopPanel(this, width, NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE));
         
         // Setup FileExplorerPanel view
 
-        // JPanel explorer_holder = JavaSwingUtils.createPanel(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
-        // explorer_holder.setBorder(null);
-        // explorer_holder.setLayout(new BorderLayout());
-        
-        // panel.add(explorer_holder);
-    
-        FileExplorerPanel explorer_panel = new FileExplorerPanel(this, SIZE_X - SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT * 2, DEFAULT_BORDER_SIZE);
+        FileExplorerPanel explorer_panel = new FileExplorerPanel(this, width, HORIZONTAL_PANEL_HEIGHT, DEFAULT_BORDER_SIZE);
         this.file_explorer_panel = explorer_panel;
 
         JScrollPane explorer_view = new JScrollPane(this.file_explorer_panel);
-        explorer_view.setPreferredSize(new Dimension(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT * 2));
+        explorer_view.setPreferredSize(new Dimension(width, HORIZONTAL_PANEL_HEIGHT - NAVBAR_HEIGHT));
         explorer_view.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         explorer_view.getVerticalScrollBar().setUnitIncrement(16);
 
-        panel.add(explorer_view, BorderLayout.CENTER);
+        panel.add(explorer_view);
 
 
         return panel;
@@ -115,9 +111,7 @@ public class FileManagerFrame extends JFrame {
 
     private FileInfoPanel createFileInfoPanel() {
         // Panel Creation
-        FileInfoPanel panel = new FileInfoPanel(this, SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
-        // JPanel panel = JavaSwingUtils.createPanel(SIDE_PANEL_SIZE, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
-
+        FileInfoPanel panel = new FileInfoPanel(this, SIDE_PANEL_SIZE, HORIZONTAL_PANEL_HEIGHT, DEFAULT_BORDER_SIZE);
 
         return panel;
     }
@@ -133,15 +127,17 @@ public class FileManagerFrame extends JFrame {
         
         // Sizing:
         this.setSize(SIZE_X, SIZE_Y);
-        this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+        BoxLayout layout = new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS);
+        this.setLayout(layout);
 
         JFileChooser file_dialog = new JFileChooser();
         this.file_dialog = file_dialog;
 
+        // Create navbar
         this.add(createNavbar());
         
         // Create the main Horizontal Panel
-        this.horizontal_panel = JavaSwingUtils.createPanel(SIZE_X, SIZE_Y - NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
+        this.horizontal_panel = JavaSwingUtils.createPanel(SIZE_X, HORIZONTAL_PANEL_HEIGHT, DEFAULT_BORDER_SIZE);
         this.horizontal_panel.setLayout(new BoxLayout(horizontal_panel, BoxLayout.X_AXIS));
 
         this.add(this.horizontal_panel);
@@ -159,8 +155,6 @@ public class FileManagerFrame extends JFrame {
 
         this.file_manager = new FileManager();
         this.updateFileManagerConfigs();
-
-        // this.file_manager.defaultUpdateChildren();
     }
 
     // Updates
@@ -178,7 +172,9 @@ public class FileManagerFrame extends JFrame {
             if (this.config.getDebug(DebugTypes.DEBUG_MENU) && !this.debug_panel.isDisplayable()) {
                 this.add(this.debug_panel);
             } else {
-                this.remove(this.debug_panel);
+                if (!this.config.getDebug(DebugTypes.DEBUG_MENU)) {
+                    this.remove(this.debug_panel);
+                }
             }
         }
 

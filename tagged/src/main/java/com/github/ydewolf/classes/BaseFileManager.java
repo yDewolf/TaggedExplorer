@@ -52,6 +52,9 @@ public abstract class BaseFileManager {
                 return validateFile(pathname);
             }
         });
+        if (filtered_files.length == 0) {
+            this.child_files.clear();
+        }
 
         // Remove files that shouldn't be there anymore
         ArrayList<String> paths_to_remove = new ArrayList<>();
@@ -107,6 +110,7 @@ public abstract class BaseFileManager {
 
     protected ArrayList<FileRef> getChildrenRecursive(File parent_folder) {
         ArrayList<File> folders_to_look = new ArrayList<>();
+
         File[] folder_files = parent_folder.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {

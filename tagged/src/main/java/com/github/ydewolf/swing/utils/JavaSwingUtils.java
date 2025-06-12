@@ -3,6 +3,7 @@ package com.github.ydewolf.swing.utils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -28,7 +29,10 @@ public class JavaSwingUtils {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         
         if (JavaSwingUtils.DEBUG_MODE) {
-            panel.setBackground(JavaSwingUtils.DEBUG_COLOR);
+            Random rand = new Random();
+            Color debug_color = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
+            // panel.setBackground(JavaSwingUtils.DEBUG_COLOR);
+            panel.setBackground(debug_color);
         }
     }
 
