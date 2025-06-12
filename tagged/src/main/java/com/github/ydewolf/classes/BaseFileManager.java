@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.github.ydewolf.classes.Files.DirRef;
 import com.github.ydewolf.classes.Files.FileRef;
+import com.github.ydewolf.classes.Files.utils.FileUtils;
 import com.github.ydewolf.classes.utils.config.BaseManagerConfig;
 
 public abstract class BaseFileManager {
@@ -109,7 +110,7 @@ public abstract class BaseFileManager {
                 // Add directories so they can be also checked
                 if (pathname.isDirectory()) {
                     // Skip this folder if it is not valid
-                    if (!validateFolder(pathname)) {
+                    if (!FileUtils.checkFileExtension(pathname.getPath(), new String[0],EXCLUDED_FOLDERS)) {
                         return false;
                     }
 
@@ -144,44 +145,14 @@ public abstract class BaseFileManager {
     }
 
     protected boolean validateFile(File file) {
-        if (VALID_EXTENSIONS.length == 0 && EXCLUDED_EXTENSIONS.length == 0) {
-            return true;
-        }
-
         // Skip files that are already in the child_files map
         if (this.child_files.containsKey(file.getAbsolutePath())) {
             return false;
         }
+        
+        return FileUtils.checkFileExtension(file.getName(), this.VALID_EXTENSIONS, this.EXCLUDED_EXTENSIONS);
 
-        for (String extension : EXCLUDED_EXTENSIONS) {
-            if (file.getAbsolutePath().endsWith(extension)) {
-                return false;
-            }
-        }
-
-        if (VALID_EXTENSIONS.length == 0) {
-            return true;
-        }
-
-        for (String extension : VALID_EXTENSIONS) {
-            if (file.getAbsolutePath().endsWith(extension)) {
-                return true;
-            }
-        }
-
-        return false;
     }
-
-    protected boolean validateFolder(File folder) {
-        for (String excluded_folder : EXCLUDED_FOLDERS) {
-            if (folder.getPath().endsWith(excluded_folder)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
 
     public HashMap<String, FileRef> getFiles() {
         return this.child_files;

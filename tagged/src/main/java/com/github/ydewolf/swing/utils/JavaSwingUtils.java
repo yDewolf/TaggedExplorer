@@ -3,13 +3,7 @@ package com.github.ydewolf.swing.utils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
@@ -76,25 +70,4 @@ public class JavaSwingUtils {
         return JavaSwingUtils.getMaxCharacters(label, "...");
     }
 
-    public static BufferedImage cropImage(File file, int target_width, int target_height) throws IOException {
-        BufferedImage original = ImageIO.read(file);
-
-        double scale = Math.max(
-            (double) target_width / original.getWidth(),
-            (double) target_height / original.getHeight()
-        );
-
-        int scaled_width = (int) Math.ceil(original.getWidth() * scale);
-        int scaled_height = (int) Math.ceil(original.getHeight() * scale);
-
-        BufferedImage scaled = new BufferedImage(scaled_width, scaled_height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2dScale = scaled.createGraphics();
-        g2dScale.drawImage(original.getScaledInstance(scaled_width, scaled_height, Image.SCALE_FAST), 0, 0, null);
-        g2dScale.dispose();
-
-        int x = Math.max(((scaled.getWidth() - target_width) / 2), 0);
-        int y = Math.max(((scaled.getHeight() - target_height) / 2), 0);
-        
-        return scaled.getSubimage(x, y, target_width, target_height);
-    }
 }

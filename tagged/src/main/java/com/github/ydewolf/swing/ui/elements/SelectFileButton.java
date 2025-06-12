@@ -10,6 +10,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import com.github.ydewolf.classes.Files.utils.FileUtils;
+import com.github.ydewolf.classes.static_classes.FileFormats;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
 public class SelectFileButton extends JButton {
@@ -43,12 +45,14 @@ public class SelectFileButton extends JButton {
     }
 
     public void loadFile(File file) {
-        try {
-            BufferedImage img = JavaSwingUtils.cropImage(file, this.width, this.height);
-            this.img_label.setIcon(new ImageIcon(img));
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+        if (FileUtils.checkFileExtension(file.getName(), FileFormats.IMAGE_LIKE_EXTENSIONS)) {
+            try {
+                BufferedImage img = FileUtils.cropImage(file, this.width, this.height);
+                this.img_label.setIcon(new ImageIcon(img));
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+            }
         }
 
         name_label.setText(JavaSwingUtils.truncateString(name_label, file.getName(), max_characters));
