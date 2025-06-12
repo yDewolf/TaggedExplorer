@@ -16,15 +16,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.github.ydewolf.classes.FileManager;
+import com.github.ydewolf.classes.utils.config.BaseManagerConfig;
+import com.github.ydewolf.classes.utils.config.ManagerConfig;
+import com.github.ydewolf.enums.DebugTypes;
 import com.github.ydewolf.swing.ui.FileExplorerPanel;
 import com.github.ydewolf.swing.ui.elements.DebugPanel;
 import com.github.ydewolf.swing.ui.elements.menu_items.OpenFolderMenuItem;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
-import com.github.ydewolf.swing.utils.ManagerConfig;
 
 public class FileManagerFrame extends JFrame {
     protected FileManager file_manager;
-    protected ManagerConfig config;
+    protected BaseManagerConfig config;
 
     protected final String WINDOW_TITLE = "TaggedExplorer-0.0.1";
     protected final String VERSION_TAG = "v0.0.1-ALPHA";
@@ -77,15 +79,15 @@ public class FileManagerFrame extends JFrame {
 
     private JComponent createLeftPanel() {
         JPanel left_panel = JavaSwingUtils.createPanel(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y, DEFAULT_BORDER_SIZE);
-        left_panel.setLayout(new BorderLayout());
         left_panel.setBorder(null);
+        left_panel.setLayout(new BorderLayout());
 
         FileExplorerPanel explorer_panel = new FileExplorerPanel(this, SIZE_X - SIDE_PANEL_SIZE, SIZE_Y, DEFAULT_BORDER_SIZE);
         this.file_explorer_panel = explorer_panel;
 
         JScrollPane explorer_view = new JScrollPane(this.file_explorer_panel);
-        explorer_view.setMaximumSize(new Dimension(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y));
-        explorer_view.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        explorer_view.setPreferredSize(new Dimension(SIZE_X - SIDE_PANEL_SIZE, SIZE_Y));
+        explorer_view.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         explorer_view.getVerticalScrollBar().setUnitIncrement(16);
 
         left_panel.add(explorer_view);
@@ -137,7 +139,7 @@ public class FileManagerFrame extends JFrame {
 
         // Create Debug Panel
         this.debug_panel = new DebugPanel(SIZE_X, NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
-        if (this.config.debug_menu) {
+        if (this.config.getDebug(DebugTypes.DEBUG_MENU)) {
             this.add(this.debug_panel);
             this.debug_panel.setVersionText(VERSION_TAG);
         }
@@ -159,12 +161,12 @@ public class FileManagerFrame extends JFrame {
         this.file_explorer_panel.updateContents();
     }
 
-    public void updateFileManagerConfigs(ManagerConfig new_config) {
+    public void updateFileManagerConfigs(BaseManagerConfig new_config) {
         this.file_manager.loadConfig(new_config);
         this.config = new_config;
 
         if (debug_panel != null) {
-            if (this.config.debug_menu && !this.debug_panel.isDisplayable()) {
+            if (this.config.getDebug(DebugTypes.DEBUG_MENU) && !this.debug_panel.isDisplayable()) {
                 this.add(this.debug_panel);
             } else {
                 this.remove(this.debug_panel);
@@ -216,7 +218,7 @@ public class FileManagerFrame extends JFrame {
         return this.file_manager;
     }
 
-    public ManagerConfig getConfigs() {
+    public BaseManagerConfig getConfigs() {
         return this.config;
     }
 }

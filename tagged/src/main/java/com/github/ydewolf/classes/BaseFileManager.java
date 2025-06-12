@@ -9,7 +9,7 @@ import java.util.Set;
 
 import com.github.ydewolf.classes.Files.DirRef;
 import com.github.ydewolf.classes.Files.FileRef;
-import com.github.ydewolf.swing.utils.ManagerConfig;
+import com.github.ydewolf.classes.utils.config.BaseManagerConfig;
 
 public abstract class BaseFileManager {
     protected String[] VALID_EXTENSIONS = {};
@@ -31,7 +31,7 @@ public abstract class BaseFileManager {
         this(".");
     }
 
-    public void loadConfig(ManagerConfig config) {
+    public void loadConfig(BaseManagerConfig config) {
         this.VALID_EXTENSIONS = config.VALID_EXTENSIONS;
         this.EXCLUDED_EXTENSIONS = config.EXCLUDED_EXTENSIONS;
         this.EXCLUDED_FOLDERS = config.EXCLUDED_FOLDERS;

@@ -1,6 +1,7 @@
 package com.github.ydewolf.classes;
 
-import com.github.ydewolf.swing.utils.ManagerConfig;
+import com.github.ydewolf.classes.utils.config.BaseManagerConfig;
+import com.github.ydewolf.enums.DebugTypes;
 
 public class FileManager extends BaseFileManager {
     protected boolean debug_mode = true;
@@ -16,11 +17,11 @@ public class FileManager extends BaseFileManager {
         super();
     }
 
-    public void loadConfig(ManagerConfig config) {
+    public void loadConfig(BaseManagerConfig config) {
         super.loadConfig(config);
 
         this.recursive = config.recursive;
-        this.debug_mode = config.debug_mode;
+        this.debug_mode = config.getDebug(DebugTypes.DEBUG_FILES);
     }
 
     public void defaultUpdateChildren() {

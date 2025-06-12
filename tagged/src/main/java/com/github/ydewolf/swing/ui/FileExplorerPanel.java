@@ -1,5 +1,6 @@
 package com.github.ydewolf.swing.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -11,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import com.github.ydewolf.enums.DebugTypes;
 import com.github.ydewolf.swing.FileManagerFrame;
 import com.github.ydewolf.swing.ui.elements.SelectFileButton;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
@@ -27,7 +29,6 @@ public class FileExplorerPanel extends JPanel {
         this.img_panels = new HashMap<>();
 
         JavaSwingUtils.setupJComponentDim(this, width, height);
-        
         int column_count = Math.floorDiv(width, IMAGE_SIZE_X + 10);
         this.setLayout(new GridLayout(0, column_count));
 
@@ -76,6 +77,11 @@ public class FileExplorerPanel extends JPanel {
             long start_time = System.currentTimeMillis();
 
             JPanel button_holder = new JPanel();
+            button_holder.setMaximumSize(new Dimension(IMAGE_SIZE_X, IMAGE_SIZE_Y));
+            if (this.manager_frame.getConfigs().getDebug(DebugTypes.DEBUG_PANELS)) {
+                button_holder.setBackground(Color.black);
+            }
+
             JavaSwingUtils.setupJComponentDim(button_holder, IMAGE_SIZE_X, IMAGE_SIZE_Y);
             button_holder.setLayout(new FlowLayout());
             
@@ -85,22 +91,23 @@ public class FileExplorerPanel extends JPanel {
             this.add(button_holder);
             img_panels.put(path, button_holder);
 
-            if (this.manager_frame.getConfigs().debug_elapsed) {
+            if (this.manager_frame.getConfigs().getDebug(DebugTypes.DEBUG_ELAPSED_TIME)) {
                 System.out.println("IMG load elapsed time: " + (System.currentTimeMillis() - start_time) + "ms");
-                total_time += (System.currentTimeMillis() - start_time);
-                added_imgs += 1;
             }
+
+            total_time += (System.currentTimeMillis() - start_time);
+            added_imgs += 1;
 
             SwingUtilities.updateComponentTreeUI(button_holder);
         }
 
-        if (this.manager_frame.getConfigs().debug_menu) {
+        if (this.manager_frame.getConfigs().getDebug(DebugTypes.DEBUG_MENU)) {
             this.manager_frame.getDebugPanel().setElapsedTimeText(total_time);
             this.manager_frame.getDebugPanel().setLoadedImagesText(added_imgs);
             this.manager_frame.getDebugPanel().setRemovedImagesText(removed_imgs);
         }
 
-        if (this.manager_frame.getConfigs().debug_elapsed) {
+        if (this.manager_frame.getConfigs().getDebug(DebugTypes.DEBUG_ELAPSED_TIME)) {
             System.out.println("Total time to load images: " + total_time + "ms | Images loaded: " + added_imgs + " | Removed images: " + removed_imgs);
         }
     }
