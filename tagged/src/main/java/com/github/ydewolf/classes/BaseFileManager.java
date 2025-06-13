@@ -10,7 +10,7 @@ import java.util.Set;
 import com.github.ydewolf.classes.Files.DirRef;
 import com.github.ydewolf.classes.Files.FileRef;
 import com.github.ydewolf.classes.Files.utils.FileUtils;
-import com.github.ydewolf.classes.utils.config.BaseManagerConfig;
+import com.github.ydewolf.classes.utils.config.abstract_classes.BaseManagerConfig;
 
 public abstract class BaseFileManager {
     protected String[] VALID_EXTENSIONS = {};

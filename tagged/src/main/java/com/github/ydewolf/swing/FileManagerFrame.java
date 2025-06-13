@@ -12,8 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.github.ydewolf.classes.FileManager;
-import com.github.ydewolf.classes.utils.config.BaseManagerConfig;
 import com.github.ydewolf.classes.utils.config.ManagerConfig;
+import com.github.ydewolf.classes.utils.config.abstract_classes.BaseManagerConfig;
 import com.github.ydewolf.enums.DebugTypes;
 import com.github.ydewolf.enums.ExplorerStatus;
 import com.github.ydewolf.swing.ui.FileExplorerPanel.FileExplorerPanel;
@@ -32,7 +32,7 @@ public class FileManagerFrame extends JFrame {
 
     // Scales only the window size
     // Also updates SIZE_X and SIZE_Y
-    protected final double SCALE = 1;
+    protected final double SCALE = 0.75;
 
     protected final int SIZE_X = (int) Math.floor(1080 * SCALE);
     protected final int SIZE_Y = (int) Math.floor(720 * SCALE);

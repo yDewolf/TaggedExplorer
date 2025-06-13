@@ -1,6 +1,6 @@
 package com.github.ydewolf.classes;
 
-import com.github.ydewolf.classes.utils.config.BaseManagerConfig;
+import com.github.ydewolf.classes.utils.config.abstract_classes.BaseManagerConfig;
 import com.github.ydewolf.enums.ChildFilesMethods;
 import com.github.ydewolf.enums.DebugTypes;
 

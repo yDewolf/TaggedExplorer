@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 
 import com.github.ydewolf.enums.ExplorerStatus;
 import com.github.ydewolf.swing.FileManagerFrame;
+import com.github.ydewolf.swing.ui.FileExplorerPanel.elements.SettingsMenu;
 import com.github.ydewolf.swing.ui.elements.menu_items.OpenFolderMenuItem;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
@@ -50,7 +51,7 @@ public class FileExplorerTopPanel extends JMenuBar {
         right_div.add(status_label);
 
         // TODO: Create a class for this menu
-        JMenu options_menu = new JMenu("Settings");
+        JMenu options_menu = new SettingsMenu(manager_frame);
         right_div.add(options_menu);
     }
 

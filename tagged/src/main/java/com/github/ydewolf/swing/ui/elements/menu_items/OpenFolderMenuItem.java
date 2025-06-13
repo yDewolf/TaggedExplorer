@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 
-import com.github.ydewolf.classes.utils.config.BaseManagerConfig;
+import com.github.ydewolf.classes.utils.config.abstract_classes.BaseManagerConfig;
 import com.github.ydewolf.swing.FileManagerFrame;
 
 public class OpenFolderMenuItem extends JMenuItem {
