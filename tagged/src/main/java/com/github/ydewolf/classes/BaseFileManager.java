@@ -17,6 +17,9 @@ public abstract class BaseFileManager {
     protected String[] EXCLUDED_EXTENSIONS = {};
     protected String[] EXCLUDED_FOLDERS = {".git", ".vscode"};
 
+    protected long last_updated = 0;
+    protected boolean never_looked_through = true;
+
     protected HashMap<String, FileRef> child_files = new HashMap<>();
     protected HashMap<String, DirRef> child_folders = new HashMap<>();
     protected File root_folder;
@@ -39,6 +42,8 @@ public abstract class BaseFileManager {
         this.EXCLUDED_FOLDERS = config.EXCLUDED_FOLDERS;
 
         this.root_folder = config.getRoot();
+        this.last_updated = System.currentTimeMillis();
+        this.never_looked_through = true;
     }
 
 
@@ -78,6 +83,9 @@ public abstract class BaseFileManager {
                 e.printStackTrace();
             }
         }
+
+        last_updated = System.currentTimeMillis();
+        this.never_looked_through = false;
     }
     
     protected void updateChildFilesRecursive() {
@@ -106,6 +114,9 @@ public abstract class BaseFileManager {
         for (String path : paths_to_remove) {
             this.child_files.remove(path);
         }
+
+        last_updated = System.currentTimeMillis();
+        this.never_looked_through = false;
     }
 
     protected ArrayList<FileRef> getChildrenRecursive(File parent_folder) {
@@ -120,8 +131,13 @@ public abstract class BaseFileManager {
                     if (!FileUtils.checkFileExtension(pathname.getPath(), new String[0],EXCLUDED_FOLDERS)) {
                         return false;
                     }
+                    long last_modified = pathname.lastModified();
+                    if (last_modified > last_updated || never_looked_through) {
+                        folders_to_look.add(pathname);
+                        return false;
+                    }
+                    System.out.println("Skipped folder " + pathname.getAbsolutePath());
 
-                    folders_to_look.add(pathname);
                     return false;
                 }
                 

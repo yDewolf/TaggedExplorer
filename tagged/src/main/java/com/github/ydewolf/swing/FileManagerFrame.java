@@ -31,7 +31,7 @@ public class FileManagerFrame extends JFrame {
 
     // Scales only the window size
     // Also updates SIZE_X and SIZE_Y
-    protected final double SCALE = 0.75;
+    protected final double SCALE = 1;
 
     protected final int SIZE_X = (int) Math.floor(1080 * SCALE);
     protected final int SIZE_Y = (int) Math.floor(720 * SCALE);
