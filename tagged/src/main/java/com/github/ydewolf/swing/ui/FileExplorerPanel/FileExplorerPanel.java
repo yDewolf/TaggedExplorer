@@ -79,6 +79,8 @@ public class FileExplorerPanel extends JPanel {
 
             JPanel button_holder = new JPanel();
             button_holder.setMaximumSize(new Dimension(IMAGE_SIZE_X, IMAGE_SIZE_Y));
+            
+            // Debug Panels
             if (this.manager_frame.getConfigs().getDebug(DebugTypes.DEBUG_PANELS)) {
                 button_holder.setBackground(Color.black);
             }
@@ -91,7 +93,9 @@ public class FileExplorerPanel extends JPanel {
             
             this.add(button_holder);
             img_panels.put(path, button_holder);
-
+            SwingUtilities.updateComponentTreeUI(button_holder);
+            
+            // Debugging info
             if (this.manager_frame.getConfigs().getDebug(DebugTypes.DEBUG_ELAPSED_TIME)) {
                 System.out.println("IMG load elapsed time: " + (System.currentTimeMillis() - start_time) + "ms");
             }
@@ -99,22 +103,23 @@ public class FileExplorerPanel extends JPanel {
             total_time += (System.currentTimeMillis() - start_time);
             added_imgs += 1;
 
-            if (this.manager_frame.getConfigs().getDebug(DebugTypes.DEBUG_MENU)) {
-                this.manager_frame.getDebugPanel().setElapsedTimeText(total_time);
-                this.manager_frame.getDebugPanel().setLoadedImagesText(added_imgs);
-            }
-
-            SwingUtilities.updateComponentTreeUI(button_holder);
+            updateDebugInfo(max_characters, added_imgs, removed_imgs);
         }
 
-        if (this.manager_frame.getConfigs().getDebug(DebugTypes.DEBUG_MENU)) {
-            this.manager_frame.getDebugPanel().setElapsedTimeText(total_time);
-            this.manager_frame.getDebugPanel().setLoadedImagesText(added_imgs);
-            this.manager_frame.getDebugPanel().setRemovedImagesText(removed_imgs);
-        }
+        updateDebugInfo(max_characters, added_imgs, removed_imgs);
 
         if (this.manager_frame.getConfigs().getDebug(DebugTypes.DEBUG_ELAPSED_TIME)) {
             System.out.println("Total time to load images: " + total_time + "ms | Images loaded: " + added_imgs + " | Removed images: " + removed_imgs);
         }
+    }
+
+    protected void updateDebugInfo(int total_time, int added_imgs, int removed_imgs) {
+        if (!this.manager_frame.getConfigs().getDebug(DebugTypes.DEBUG_MENU)) {
+            return;
+        }
+        
+        this.manager_frame.getDebugPanel().setElapsedTimeText(total_time);
+        this.manager_frame.getDebugPanel().setLoadedImagesText(added_imgs);
+        this.manager_frame.getDebugPanel().setRemovedImagesText(removed_imgs);
     }
 }

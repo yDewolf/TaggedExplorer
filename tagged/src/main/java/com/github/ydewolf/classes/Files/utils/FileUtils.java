@@ -37,6 +37,14 @@ public class FileUtils {
         return FileUtils.checkFileExtension(filename, valid_extensions, new String[0]);
     }
 
+    public static String getFileExtension(File file) {
+        String[] splitted = file.getName().split("\\.");
+        if (splitted.length == 0) {
+            return "";
+        }
+
+        return splitted[splitted.length - 1];
+    }
     
     public static BufferedImage cropImage(File file, int target_width, int target_height) throws IOException {
         BufferedImage original = ImageIO.read(file);
@@ -60,7 +68,7 @@ public class FileUtils {
 
         int x = Math.max(((scaled.getWidth() - target_width) / 2), 0);
         int y = Math.max(((scaled.getHeight() - target_height) / 2), 0);
-        
+
         return scaled.getSubimage(x, y, target_width, target_height);
     }
 }

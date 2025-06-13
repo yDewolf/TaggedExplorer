@@ -15,6 +15,7 @@ import com.github.ydewolf.classes.FileManager;
 import com.github.ydewolf.classes.utils.config.BaseManagerConfig;
 import com.github.ydewolf.classes.utils.config.ManagerConfig;
 import com.github.ydewolf.enums.DebugTypes;
+import com.github.ydewolf.enums.ExplorerStatus;
 import com.github.ydewolf.swing.ui.FileExplorerPanel.FileExplorerPanel;
 import com.github.ydewolf.swing.ui.FileExplorerPanel.parts.FileExplorerTopPanel;
 import com.github.ydewolf.swing.ui.FileInfoPanel.FileInfoPanel;
@@ -50,6 +51,7 @@ public class FileManagerFrame extends JFrame {
     protected JFileChooser file_dialog;
 
     protected FileExplorerPanel file_explorer_panel;
+    protected FileExplorerTopPanel file_explorer_top_panel;
     protected FileInfoPanel file_info_panel;
 
     protected JPanel horizontal_panel;
@@ -70,6 +72,7 @@ public class FileManagerFrame extends JFrame {
         this.updateFileExplorer();
     }
 
+    @SuppressWarnings("unused")
     private JComponent createNavbar() {
         JMenuBar navbar = new JMenuBar();
         JavaSwingUtils.setupJComponentDim(navbar, SIZE_X, NAVBAR_HEIGHT);
@@ -91,7 +94,8 @@ public class FileManagerFrame extends JFrame {
         panel.setBorder(null);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        panel.add(new FileExplorerTopPanel(this, width, NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE));
+        this.file_explorer_top_panel = new FileExplorerTopPanel(this, width, NAVBAR_HEIGHT, DEFAULT_BORDER_SIZE);
+        panel.add(this.file_explorer_top_panel);
         
         // Setup FileExplorerPanel view
 
@@ -134,7 +138,7 @@ public class FileManagerFrame extends JFrame {
         this.file_dialog = file_dialog;
 
         // Create navbar
-        this.add(createNavbar());
+        // this.add(createNavbar());
         
         // Create the main Horizontal Panel
         this.horizontal_panel = JavaSwingUtils.createPanel(SIZE_X, HORIZONTAL_PANEL_HEIGHT, DEFAULT_BORDER_SIZE);
@@ -160,8 +164,14 @@ public class FileManagerFrame extends JFrame {
     // Updates
 
     public void updateFileExplorer() {
+        this.file_explorer_top_panel.setStatus(ExplorerStatus.LOOKING_THROUGH_FOLDERS);
+        
         this.file_manager.defaultUpdateChildren();
+        this.file_explorer_top_panel.setStatus(ExplorerStatus.FINISHED_LOOKING_THROUGH_FOLDERS);
+        
+        this.file_explorer_top_panel.setStatus(ExplorerStatus.LOADING_FILES);
         this.file_explorer_panel.updateContents();
+        this.file_explorer_top_panel.setStatus(ExplorerStatus.FINISHED_LOADING);
     }
 
     public void updateFileManagerConfigs(BaseManagerConfig new_config) {
@@ -218,7 +228,9 @@ public class FileManagerFrame extends JFrame {
     }
 
     protected Thread createNewUpdateThread() {
-        this.file_loading_thread = new Thread(() -> {this.updateFileExplorer();});
+        this.file_loading_thread = new Thread(() -> {
+            this.updateFileExplorer();
+        });
         
         return this.file_loading_thread;
     }
@@ -229,5 +241,9 @@ public class FileManagerFrame extends JFrame {
 
     public BaseManagerConfig getConfigs() {
         return this.config;
+    }
+
+    public JFileChooser getFileChooser() {
+        return this.file_dialog;
     }
 }
