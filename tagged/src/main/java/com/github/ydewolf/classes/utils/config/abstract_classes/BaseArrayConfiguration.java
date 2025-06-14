@@ -11,6 +11,7 @@ public class BaseArrayConfiguration extends Configuration {
         this.value = new_value;
     }
 
+    @Override
     public Object[] getValue() {
         return (Object[]) this.value;
     }

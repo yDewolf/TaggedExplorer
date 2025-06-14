@@ -13,4 +13,13 @@ public class ConfigRootFolder extends Configuration {
     public ConfigRootFolder(File value) {
         super(ManagerConfigKeys.RootFolder, value);
     }
+
+    public void setValue(File new_value) {
+        this.value = new_value;
+    }
+
+    @Override
+    public File getValue() {
+        return (File) this.value;
+    }
 }

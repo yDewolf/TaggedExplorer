@@ -12,4 +12,13 @@ public class ConfigFileSearchMethod extends Configuration {
     public ConfigFileSearchMethod(ChildFilesMethods value) {
         super(ManagerConfigKeys.FileSearchMethod, value);
     }
+
+    public void setValue(ChildFilesMethods new_value) {
+        this.value = new_value;
+    }
+
+    @Override
+    public ChildFilesMethods getValue() {
+        return (ChildFilesMethods) this.value;
+    }
 }
