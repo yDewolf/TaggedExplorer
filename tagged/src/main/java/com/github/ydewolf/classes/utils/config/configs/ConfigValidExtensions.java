@@ -7,10 +7,12 @@ import com.github.ydewolf.static_classes.FileFormats;
 public class ConfigValidExtensions extends BaseArrayConfiguration {
     public ConfigValidExtensions() {
         super(ManagerConfigKeys.ValidExtensions, FileFormats.IMAGE_LIKE_EXTENSIONS);
+        this.capitalized_name = "Valid Extensions";
     }
 
     public ConfigValidExtensions(String[] valid_extensions) {
         super(ManagerConfigKeys.ValidExtensions, valid_extensions);
+        this.capitalized_name = "Valid Extensions";
     }
 
     public void fromString(String string, String separator) {

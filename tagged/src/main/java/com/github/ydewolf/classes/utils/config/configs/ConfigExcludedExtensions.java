@@ -6,10 +6,12 @@ import com.github.ydewolf.enums.ManagerConfigKeys;
 public class ConfigExcludedExtensions extends BaseArrayConfiguration {
     public ConfigExcludedExtensions() {
         super(ManagerConfigKeys.ExcludedExtensions, new String[0]);
+        this.capitalized_name = "Excluded Extensions";
     }
 
     public ConfigExcludedExtensions(String[] excluded_extensions) {
         super(ManagerConfigKeys.ExcludedExtensions, excluded_extensions);
+        this.capitalized_name = "Excluded Extensions";
     }
 
     public void fromString(String string, String separator) {

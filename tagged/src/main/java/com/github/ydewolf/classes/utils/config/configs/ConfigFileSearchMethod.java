@@ -7,10 +7,12 @@ import com.github.ydewolf.enums.ManagerConfigKeys;
 public class ConfigFileSearchMethod extends Configuration {
     public ConfigFileSearchMethod() {
         super(ManagerConfigKeys.FileSearchMethod, ChildFilesMethods.RECURSIVE);
+        this.capitalized_name = "File Search Method";
     }
     
     public ConfigFileSearchMethod(ChildFilesMethods value) {
         super(ManagerConfigKeys.FileSearchMethod, value);
+        this.capitalized_name = "File Search Method";
     }
 
     public void setValue(ChildFilesMethods new_value) {

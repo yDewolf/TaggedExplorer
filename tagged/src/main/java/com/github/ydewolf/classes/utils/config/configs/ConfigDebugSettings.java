@@ -10,6 +10,7 @@ public class ConfigDebugSettings extends Configuration {
 
     public ConfigDebugSettings() {
         super(ManagerConfigKeys.DebugSettings, new HashMap<>());
+        this.capitalized_name = "Debug Settings";
         
         for (DebugTypes type : DebugTypes.values()) {
             this.value.put(type, false);

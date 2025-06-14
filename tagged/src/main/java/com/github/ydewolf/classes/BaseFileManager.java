@@ -11,6 +11,7 @@ import com.github.ydewolf.classes.Files.DirRef;
 import com.github.ydewolf.classes.Files.FileRef;
 import com.github.ydewolf.classes.Files.utils.FileUtils;
 import com.github.ydewolf.classes.utils.config.abstract_classes.BaseManagerConfig;
+import com.github.ydewolf.enums.ManagerConfigKeys;
 
 public abstract class BaseFileManager {
     protected String[] VALID_EXTENSIONS = {};
@@ -37,9 +38,9 @@ public abstract class BaseFileManager {
     }
 
     public void loadConfig(BaseManagerConfig config) {
-        this.VALID_EXTENSIONS = config.VALID_EXTENSIONS;
-        this.EXCLUDED_EXTENSIONS = config.EXCLUDED_EXTENSIONS;
-        this.EXCLUDED_FOLDERS = config.EXCLUDED_FOLDERS;
+        this.VALID_EXTENSIONS = (String[]) config.getConfigValue(ManagerConfigKeys.ValidExtensions);
+        this.EXCLUDED_EXTENSIONS = (String[]) config.getConfigValue(ManagerConfigKeys.ExcludedExtensions);
+        this.EXCLUDED_FOLDERS = (String[]) config.getConfigValue(ManagerConfigKeys.ExcludedFolders);
 
         this.root_folder = config.getRoot();
         this.last_updated = System.currentTimeMillis();

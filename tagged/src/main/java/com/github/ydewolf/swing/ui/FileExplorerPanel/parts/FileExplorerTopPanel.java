@@ -6,14 +6,13 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 
 import com.github.ydewolf.enums.ExplorerStatus;
 import com.github.ydewolf.swing.FileManagerFrame;
-import com.github.ydewolf.swing.ui.FileExplorerPanel.elements.SettingsMenu;
+import com.github.ydewolf.swing.ui.FileExplorerPanel.elements.SettingsMenuItem;
 import com.github.ydewolf.swing.ui.elements.menu_items.OpenFolderMenuItem;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
@@ -40,6 +39,7 @@ public class FileExplorerTopPanel extends JMenuBar {
         left_div.add(refresh_button);
 
         JMenuBar right_div = new JMenuBar();
+        right_div.setLayout(new FlowLayout());
         this.add(right_div, BorderLayout.EAST);
 
         this.status_label = new JTextField();
@@ -50,8 +50,7 @@ public class FileExplorerTopPanel extends JMenuBar {
         this.setStatus(ExplorerStatus.IDLE);
         right_div.add(status_label);
 
-        // TODO: Create a class for this menu
-        JMenu options_menu = new SettingsMenu(manager_frame);
+        SettingsMenuItem options_menu = new SettingsMenuItem(manager_frame);
         right_div.add(options_menu);
     }
 

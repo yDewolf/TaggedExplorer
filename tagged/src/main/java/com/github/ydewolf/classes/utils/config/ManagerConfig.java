@@ -7,8 +7,8 @@ public class ManagerConfig extends BaseManagerConfig {
     public ManagerConfig() {
         super();
         
-        this.debug_options.put(DebugTypes.DEBUG_MENU, true);
-        this.debug_options.put(DebugTypes.DEBUG_PANELS, false);
-        this.debug_options.put(DebugTypes.DEBUG_FILE_MANAGER, true);
+        this.setDebug(DebugTypes.DEBUG_MENU, true);
+        this.setDebug(DebugTypes.DEBUG_PANELS, false);
+        this.setDebug(DebugTypes.DEBUG_FILE_MANAGER, true);
     }
 }

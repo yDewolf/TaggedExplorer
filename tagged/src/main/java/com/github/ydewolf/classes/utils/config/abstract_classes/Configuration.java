@@ -4,6 +4,7 @@ import com.github.ydewolf.classes.utils.config.interfaces.Configurable;
 import com.github.ydewolf.enums.ManagerConfigKeys;
 
 public abstract class Configuration implements Configurable {
+    protected String capitalized_name = "Placeholder config";
     protected ManagerConfigKeys tag;
     protected Object value;
 
@@ -20,5 +21,9 @@ public abstract class Configuration implements Configurable {
     @Override
     public Object getValue() {
         return this.value;
+    }
+
+    public String getName() {
+        return this.capitalized_name;
     }
 }

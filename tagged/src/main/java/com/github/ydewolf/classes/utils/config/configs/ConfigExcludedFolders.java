@@ -6,10 +6,12 @@ import com.github.ydewolf.enums.ManagerConfigKeys;
 public class ConfigExcludedFolders extends BaseArrayConfiguration {
     public ConfigExcludedFolders() {
         super(ManagerConfigKeys.ExcludedFolders, new String[0]);
+        this.capitalized_name = "Excluded Folders";
     }
 
     public ConfigExcludedFolders(String[] excluded_folders) {
         super(ManagerConfigKeys.ExcludedFolders, excluded_folders);
+        this.capitalized_name = "Excluded Folders";
     }
 
     public void fromString(String string, String separator) {

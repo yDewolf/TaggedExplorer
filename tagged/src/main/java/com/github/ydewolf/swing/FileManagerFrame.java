@@ -19,6 +19,7 @@ import com.github.ydewolf.enums.ExplorerStatus;
 import com.github.ydewolf.swing.ui.FileExplorerPanel.FileExplorerPanel;
 import com.github.ydewolf.swing.ui.FileExplorerPanel.parts.FileExplorerTopPanel;
 import com.github.ydewolf.swing.ui.FileInfoPanel.FileInfoPanel;
+import com.github.ydewolf.swing.ui.SettingsMenu.SettingsMenu;
 import com.github.ydewolf.swing.ui.elements.DebugPanel;
 import com.github.ydewolf.swing.ui.elements.menu_items.OpenFolderMenuItem;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
@@ -37,6 +38,9 @@ public class FileManagerFrame extends JFrame {
     protected final int SIZE_X = (int) Math.floor(1080 * SCALE);
     protected final int SIZE_Y = (int) Math.floor(720 * SCALE);
 
+    protected final int SETTINGS_SIZE_X = (int) Math.floor(600);
+    protected final int SETTINGS_SIZE_Y = (int) Math.floor(720);
+
     protected final int SIDE_PANEL_SIZE = 350;
     
     protected final int DEFAULT_BORDER_SIZE = 5;
@@ -49,6 +53,7 @@ public class FileManagerFrame extends JFrame {
     protected Thread file_loading_thread;
 
     protected JFileChooser file_dialog;
+    protected SettingsMenu settings_menu;
 
     protected FileExplorerPanel file_explorer_panel;
     protected FileExplorerTopPanel file_explorer_top_panel;
@@ -134,8 +139,9 @@ public class FileManagerFrame extends JFrame {
         BoxLayout layout = new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS);
         this.setLayout(layout);
 
-        JFileChooser file_dialog = new JFileChooser();
-        this.file_dialog = file_dialog;
+        this.settings_menu = new SettingsMenu(this, SETTINGS_SIZE_X, SETTINGS_SIZE_Y, DEFAULT_BORDER_SIZE);
+
+        this.file_dialog = new JFileChooser();
 
         // Create navbar
         // this.add(createNavbar());
@@ -205,6 +211,10 @@ public class FileManagerFrame extends JFrame {
 
     public DebugPanel getDebugPanel() {
         return this.debug_panel;
+    }
+
+    public void openSettingsMenu() {
+        this.settings_menu.setVisible(!this.settings_menu.isVisible());
     }
 
     // Utils
