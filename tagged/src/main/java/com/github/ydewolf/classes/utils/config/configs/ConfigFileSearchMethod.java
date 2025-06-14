@@ -1,10 +1,10 @@
 package com.github.ydewolf.classes.utils.config.configs;
 
-import com.github.ydewolf.classes.utils.config.abstract_classes.Configuration;
+import com.github.ydewolf.classes.utils.config.abstract_classes.BaseSelectEnumConfiguration;
 import com.github.ydewolf.enums.ChildFilesMethods;
 import com.github.ydewolf.enums.ManagerConfigKeys;
 
-public class ConfigFileSearchMethod extends Configuration {
+public class ConfigFileSearchMethod extends BaseSelectEnumConfiguration {
     public ConfigFileSearchMethod() {
         super(ManagerConfigKeys.FileSearchMethod, ChildFilesMethods.RECURSIVE);
         this.capitalized_name = "File Search Method";

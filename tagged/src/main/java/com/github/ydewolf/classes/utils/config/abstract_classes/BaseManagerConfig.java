@@ -54,7 +54,7 @@ public abstract class BaseManagerConfig {
     }
 
     public void setConfig(ManagerConfigKeys config_key, Object value) {
-        this.configurations.put(config_key, value);
+        getConfig(config_key).setValue(value);
     }
 
 

@@ -13,6 +13,10 @@ public abstract class Configuration implements Configurable {
         this.setValue(default_value);
     }
 
+    public ManagerConfigKeys getConfigKey() {
+        return this.tag;
+    }
+
     @Override
     public void setValue(Object new_value) {
         this.value = new_value;
