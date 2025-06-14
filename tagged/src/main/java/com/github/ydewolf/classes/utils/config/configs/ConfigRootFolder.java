@@ -6,7 +6,11 @@ import com.github.ydewolf.classes.utils.config.abstract_classes.Configuration;
 import com.github.ydewolf.enums.ManagerConfigKeys;
 
 public class ConfigRootFolder extends Configuration {
-    public ConfigRootFolder(ManagerConfigKeys tag, File default_value) {
-        super(tag, default_value);
-    }   
+    public ConfigRootFolder() {
+        super(ManagerConfigKeys.RootFolder, new File(System.getProperty("user.home") + "\\Pictures"));
+    }
+
+    public ConfigRootFolder(File value) {
+        super(ManagerConfigKeys.RootFolder, value);
+    }
 }

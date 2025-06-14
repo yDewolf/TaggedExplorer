@@ -21,5 +21,4 @@ public abstract class Configuration implements Configurable {
     public Object getValue() {
         return this.value;
     }
-    
 }
