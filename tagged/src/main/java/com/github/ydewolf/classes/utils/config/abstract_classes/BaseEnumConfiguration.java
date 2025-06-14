@@ -12,6 +12,11 @@ public abstract class BaseEnumConfiguration extends Configuration {
         super(tag, default_value);
     }
     
+    @Override
+    public void setValue(Object new_value) {
+        this.value = (HashMap<Enum<?>, Boolean>) new_value;
+    }
+
     public void setValue(Enum<?> key, Boolean value) {
         this.value.put(key, value);
     }

@@ -7,8 +7,9 @@ public abstract class BaseArrayConfiguration extends Configuration {
         super(tag, default_value);
     }
 
-    public void setValue(Object[] new_value) {
-        this.value = new_value;
+    @Override
+    public void setValue(Object new_value) {
+        this.value = (Object[]) new_value;
     }
 
     public void fromString(String string, String separator) {

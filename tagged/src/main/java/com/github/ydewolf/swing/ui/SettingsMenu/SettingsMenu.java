@@ -142,7 +142,7 @@ public class SettingsMenu extends JDialog {
 
     protected JPanel optionForEnumConfig(BaseEnumConfiguration config) {
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setLayout(new GridLayout(0, 1));
 
         JLabel label = new JLabel(config.getName());
         panel.add(label);

@@ -8,8 +8,9 @@ public abstract class BaseSelectEnumConfiguration extends Configuration {
         super(tag, default_value);
     }
     
-    public void setValue(Enum<?> key) {
-        this.value = key;
+    @Override
+    public void setValue(Object key) {
+        this.value = (Enum<?>) key;
     }
 
     public Enum<?> getValue() {
