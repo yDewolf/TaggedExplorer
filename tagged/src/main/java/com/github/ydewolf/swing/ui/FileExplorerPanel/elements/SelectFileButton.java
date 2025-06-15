@@ -52,7 +52,7 @@ public class SelectFileButton extends JButton {
 
         if (FileUtils.checkFileExtension(file.getName(), FileFormats.IMAGE_LIKE_EXTENSIONS)) {
             try {
-                BufferedImage img = FileUtils.cropImage(file, this.width, this.height);
+                BufferedImage img = FileUtils.readImageFileCropped(file, this.width, this.height);
                 if (img != null) {
                     this.img_label.setIcon(new ImageIcon(img));
                 }
@@ -60,7 +60,7 @@ public class SelectFileButton extends JButton {
 
             } catch (IOException e) {
                 System.err.println(e.getMessage());
-                System.err.println("Yep. I can't access this image | IOException");
+                System.err.println("Yep. I can't access this image, sorry | IOException");
                 return;
                 // e.printStackTrace();
             }

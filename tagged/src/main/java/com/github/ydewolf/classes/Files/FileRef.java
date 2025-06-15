@@ -29,6 +29,10 @@ public class FileRef {
         return new FileRef(file.getAbsolutePath(), file);    
     }
 
+    public String getFilename() {
+        return this.getInstance().getName();
+    }
+
     public String getPath() {
         return this.path;
     }

@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -99,6 +101,13 @@ public class FileExplorerPanel extends JPanel {
                 button_holder.setLayout(new FlowLayout());
                 
                 SelectFileButton select_button = new SelectFileButton(manager_frame.getFileManager().getFileInstance(path), IMAGE_SIZE_X, IMAGE_SIZE_Y, max_characters);
+                select_button.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        manager_frame.setSelectedFile(path);
+                    }
+                    
+                });
                 button_holder.add(select_button);
                 
                 this.add(button_holder);

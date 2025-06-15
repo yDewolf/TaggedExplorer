@@ -10,8 +10,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import com.github.ydewolf.classes.FileManager;
+import com.github.ydewolf.classes.SelectHandler.FileSelectHandler;
 import com.github.ydewolf.classes.utils.config.ManagerConfig;
 import com.github.ydewolf.enums.DebugTypes;
 import com.github.ydewolf.enums.ExplorerStatus;
@@ -26,6 +28,8 @@ import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
 public class FileManagerFrame extends JFrame {
     protected FileManager file_manager;
+    protected FileSelectHandler file_select_handler;
+
     protected ManagerConfig config;
 
     protected final String WINDOW_TITLE = "TaggedExplorer-0.0.1";
@@ -33,7 +37,7 @@ public class FileManagerFrame extends JFrame {
 
     // Scales only the window size
     // Also updates SIZE_X and SIZE_Y
-    protected final double SCALE = 0.75;
+    protected final double SCALE = 1;
 
     protected final int SIZE_X = (int) Math.floor(1080 * SCALE);
     protected final int SIZE_Y = (int) Math.floor(720 * SCALE);
@@ -41,7 +45,7 @@ public class FileManagerFrame extends JFrame {
     protected final int SETTINGS_SIZE_X = (int) Math.floor(600);
     protected final int SETTINGS_SIZE_Y = (int) Math.floor(720);
 
-    protected final int SIDE_PANEL_SIZE = 350;
+    protected final int SIDE_PANEL_SIZE = (int) Math.floor(SIZE_X / 2.25);
     
     protected final int DEFAULT_BORDER_SIZE = 5;
     
@@ -132,6 +136,7 @@ public class FileManagerFrame extends JFrame {
 
     protected void setup() {
         this.setupFileManager();
+        this.file_select_handler = new FileSelectHandler(file_manager);
 
         this.setResizable(false);
         this.setTitle(this.WINDOW_TITLE);
@@ -172,6 +177,21 @@ public class FileManagerFrame extends JFrame {
 
     // Updates
 
+    public void setSelectedFile(String abs_path) {
+        this.file_select_handler.selectFile(abs_path);
+
+        this.updateFileInfo();
+    }
+
+    public void updateFileInfo() {
+        if (this.file_info_panel == null) {
+            System.err.println("Trying to update file info but file_info_panel is null");
+            return;
+        }
+
+        file_info_panel.updateSelectedImage();
+    }
+
     public void updateFileExplorer() {
         if (ready) {
             this.file_explorer_top_panel.setStatus(ExplorerStatus.LOOKING_THROUGH_FOLDERS);
@@ -198,15 +218,13 @@ public class FileManagerFrame extends JFrame {
         this.file_manager.loadConfig(new_config);
         this.config = new_config;
 
-        if (debug_panel != null) {
-            if (this.config.getDebug(DebugTypes.DEBUG_MENU) && !this.debug_panel.isDisplayable()) {
+        if (debug_panel != null && this.config.getChanged(ManagerConfigKeys.DebugSettings)) {
+            if (this.config.getDebug(DebugTypes.DEBUG_MENU)) {
                 this.add(this.debug_panel);
             } else {
-                if (!this.config.getDebug(DebugTypes.DEBUG_MENU)) {
-                    this.remove(this.debug_panel);
-                    // SwingUtilities.updateComponentTreeUI(this);
-                }
+                this.remove(this.debug_panel);
             }
+            SwingUtilities.updateComponentTreeUI(this);
         }
 
         if (this.file_info_panel != null) {
@@ -272,6 +290,10 @@ public class FileManagerFrame extends JFrame {
 
     public FileManager getFileManager() {
         return this.file_manager;
+    }
+
+    public FileSelectHandler getSelectHandler() {
+        return this.file_select_handler;
     }
 
     public ManagerConfig getConfigs() {

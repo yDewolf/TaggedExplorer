@@ -46,11 +46,20 @@ public class FileUtils {
         return splitted[splitted.length - 1];
     }
     
-    public static BufferedImage cropImage(File file, int target_width, int target_height) throws IOException {
+    // If you set any of the sizes to 0, it will use the original size
+    public static BufferedImage readImageFileCropped(File file, int target_width, int target_height) throws IOException {
         BufferedImage original = ImageIO.read(file);
         if (original == null) {
             System.err.println("WARNING: Something went wrong while reading file: " + file.getAbsolutePath() + " | BufferedImage is null");
             return original;
+        }
+
+        if (target_width == 0) {
+            target_width = original.getWidth();
+        }
+
+        if (target_height == 0) {
+            target_height = original.getHeight();
         }
 
         double scale = Math.max(
@@ -70,6 +79,12 @@ public class FileUtils {
         int y = Math.max(((scaled.getHeight() - target_height) / 2), 0);
 
         return scaled.getSubimage(x, y, target_width, target_height);
+    }
+
+    public static BufferedImage readImageFile(File file) throws IOException {
+        BufferedImage original = ImageIO.read(file);
+        
+        return original;
     }
 }
 

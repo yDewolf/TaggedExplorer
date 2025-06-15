@@ -171,7 +171,7 @@ public abstract class BaseFileManager {
                 try {
                     // Add directories so they can be also checked
                     if (pathname.isDirectory()) {
-                        if (folder_count >= 10) {
+                        if (folder_count >= 20) {
                             Thread.sleep(0, 1);
                         }
                         folder_count++;
@@ -206,9 +206,9 @@ public abstract class BaseFileManager {
         try {
             int folder_count = 0;
             for (File directory : folders_to_look) {
-                if (folder_count >= 5) {
+                if (folder_count >= 10) {
                     folder_count = 0;
-                    Thread.sleep(0, 2);
+                    Thread.sleep(0, 1);
                 }
                 folder_count++;
                 this.child_folders.put(directory.getAbsolutePath(), (DirRef) BaseFileManager.createRefFromFile(directory));

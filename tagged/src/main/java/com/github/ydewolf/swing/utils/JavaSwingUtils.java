@@ -3,6 +3,7 @@ package com.github.ydewolf.swing.utils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
+import java.awt.GridLayout;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -10,6 +11,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class JavaSwingUtils {
     static final boolean DEBUG_MODE = false;
@@ -20,6 +22,27 @@ public class JavaSwingUtils {
         JavaSwingUtils.setupJPanel(panel, width, height, border_size);
 
         return panel;
+    }
+
+    public static JTextField createTextfieldRow(JPanel main_panel, String label_text, int width, int height, boolean editable) {
+        JPanel row = new JPanel();
+        main_panel.add(row);
+        row.setLayout(new GridLayout(1, 2));
+        JavaSwingUtils.setupJComponentDim(row, width, height);
+        row.setPreferredSize(new Dimension(width, height));
+
+        JLabel label = new JLabel(label_text);
+        row.add(label);
+
+        JTextField field = new JTextField();
+        field.setEditable(false);
+        
+        row.add(field);
+        return field;
+    }
+
+    public static JTextField createTextfieldRow(JPanel main_panel, String label_text, int width, int height) {
+        return JavaSwingUtils.createTextfieldRow(main_panel, label_text, width, height, false);
     }
 
     public static void setupJPanel(JPanel panel, int width, int height, int border_size) {
