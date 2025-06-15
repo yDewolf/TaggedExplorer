@@ -53,11 +53,11 @@ public class FileInfoPanel extends JPanel {
             image_view.getVerticalScrollBar().setUnitIncrement(16);
             image_view.getHorizontalScrollBar().setUnitIncrement(16);
     
-            this.image_label = new JLabel("No Image Was Selected Yet");
+            this.image_label = new JLabel();
 
             image_view.setViewportView(image_label);
             image_view.setPreferredSize(new Dimension(width, width));
-            
+
             this.add(image_view);
         }
 

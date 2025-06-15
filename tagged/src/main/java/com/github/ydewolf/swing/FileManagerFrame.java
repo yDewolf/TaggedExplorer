@@ -32,8 +32,8 @@ public class FileManagerFrame extends JFrame {
 
     protected ManagerConfig config;
 
-    protected final String WINDOW_TITLE = "TaggedExplorer-0.0.1";
-    protected final String VERSION_TAG = "v0.0.1-ALPHA";
+    protected final String WINDOW_TITLE = "TaggedExplorer";
+    protected final String VERSION_TAG = "v0.5.0-BETA";
 
     // Scales only the window size
     // Also updates SIZE_X and SIZE_Y
@@ -58,6 +58,8 @@ public class FileManagerFrame extends JFrame {
 
     protected JFileChooser file_dialog;
     protected SettingsMenu settings_menu;
+
+    protected final ManagerConfigKeys[] EXCLUDED_SETTINGS = {ManagerConfigKeys.RootFolder};
 
     protected FileExplorerPanel file_explorer_panel;
     protected FileExplorerTopPanel file_explorer_top_panel;
@@ -147,7 +149,7 @@ public class FileManagerFrame extends JFrame {
         BoxLayout layout = new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS);
         this.setLayout(layout);
 
-        this.settings_menu = new SettingsMenu(this, SETTINGS_SIZE_X, SETTINGS_SIZE_Y, DEFAULT_BORDER_SIZE);
+        this.settings_menu = new SettingsMenu(this, EXCLUDED_SETTINGS, SETTINGS_SIZE_X, SETTINGS_SIZE_Y, DEFAULT_BORDER_SIZE);
 
         this.file_dialog = new JFileChooser();
 
@@ -247,6 +249,7 @@ public class FileManagerFrame extends JFrame {
     }
 
     public void openSettingsMenu() {
+        this.settings_menu.setLocationRelativeTo(this);
         this.settings_menu.setVisible(!this.settings_menu.isVisible());
     }
 

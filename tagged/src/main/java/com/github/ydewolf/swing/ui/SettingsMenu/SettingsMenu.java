@@ -1,6 +1,5 @@
 package com.github.ydewolf.swing.ui.SettingsMenu;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -11,7 +10,6 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -33,30 +31,47 @@ public class SettingsMenu extends JDialog {
     protected FileManagerFrame manager_frame;
     protected HashMap<ManagerConfigKeys, Callable<Object>> value_map = new HashMap<>();
     protected HashMap<Enum<?>, JCheckBox> checkbox_map = new HashMap<>();
+    protected ManagerConfigKeys[] EXCLUDED_SETTINGS = {};
 
     protected JButton save_button;
 
     protected int width;
     protected int height;
 
+    public SettingsMenu(FileManagerFrame manager_frame, ManagerConfigKeys[] excluded_settings, int width, int height, int border_size) {
+        this(manager_frame, width, height, border_size);
+        this.setup(manager_frame, excluded_settings, width, height, border_size);
+    }
+
     public SettingsMenu(FileManagerFrame manager_frame, int width, int height, int border_size) {
         super(manager_frame, "Settings", true);
+        this.setup(manager_frame, this.EXCLUDED_SETTINGS,width, height, border_size);
+    }
+
+    protected void setup(FileManagerFrame manager_frame, ManagerConfigKeys[] excluded_settings, int width, int height, int border_size) {
         this.manager_frame = manager_frame;
         this.width = width;
         this.height = height;
-
+        this.EXCLUDED_SETTINGS = excluded_settings;
         this.setSize(width, height);
-        // this.setLocationRelativeTo(manager_frame);
         
         JPanel main_panel = new JPanel();
         JavaSwingUtils.setupJPanel(main_panel, width, height, border_size);
-        // main_panel.setLayout(new BoxLayout(main_panel, BoxLayout.Y_AXIS));
-        // JavaSwingUtils.setupJComponentDim(main_panel, width, height);
+
         this.add(main_panel);
 
         this.save_button = new JButton("Save");
 
-        for (ManagerConfigKeys key : this.manager_frame.getConfigs().getConfigs()) {
+        for (ManagerConfigKeys key : ManagerConfigKeys.values()) {
+            boolean ignore = false;
+            for (ManagerConfigKeys excluded : excluded_settings) {
+                if (key == excluded) {
+                    ignore = true;
+                    break;
+                }
+            }
+            if (ignore) { continue; }
+
             this.addConfigOption(main_panel, key);
         }
 
@@ -89,7 +104,6 @@ public class SettingsMenu extends JDialog {
     public void addConfigOption(JPanel main_panel, ManagerConfigKeys config_key) {
         Configuration config = this.manager_frame.getConfigs().getConfig(config_key);
         // Configs that use arrays
-        // if (config.getClass().isAssignableFrom(BaseArrayConfiguration.class)) {
         if (config instanceof BaseArrayConfiguration) {
             JPanel panel = this.optionForArrayConfig((BaseArrayConfiguration) config);
             main_panel.add(panel);
@@ -98,6 +112,7 @@ public class SettingsMenu extends JDialog {
 
         // Configs that uses multiple enum values
         if (config instanceof BaseEnumConfiguration) {
+            main_panel.add(this.createSeparator(config.getName()));
             JPanel panel = this.optionForEnumConfig((BaseEnumConfiguration) config);
             main_panel.add(panel);
             return;
@@ -159,8 +174,7 @@ public class SettingsMenu extends JDialog {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1));
 
-        JLabel label = new JLabel(config.getName());
-        panel.add(label);
+
 
         Set<Enum<?>> key_set = config.getValues().keySet();
 
@@ -214,6 +228,8 @@ public class SettingsMenu extends JDialog {
         return panel;
     }
 
+    // Updates
+
     public void updateConfiguration() {
         ManagerConfig new_config = new ManagerConfig();
         for (ManagerConfigKeys key : this.value_map.keySet()) {
@@ -227,5 +243,17 @@ public class SettingsMenu extends JDialog {
         }
 
         this.manager_frame.updateFileManagerConfigs(new_config);
+    }
+
+    // Utils
+
+    protected JPanel createSeparator(String name) {
+        JPanel separator = new JPanel();
+        separator.setMinimumSize(new Dimension(width, 5));
+
+        JLabel label = new JLabel(name);
+        separator.add(label);
+
+        return separator;
     }
 }

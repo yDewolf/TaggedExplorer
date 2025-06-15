@@ -62,7 +62,6 @@ public class JavaSwingUtils {
     public static void setupJComponentDim(JComponent component, int width, int height) {
         Dimension dim = new Dimension(width, height);
         component.setSize(dim);
-        component.setBounds(0, 0, width, height);
         component.setMaximumSize(dim);
     }
 

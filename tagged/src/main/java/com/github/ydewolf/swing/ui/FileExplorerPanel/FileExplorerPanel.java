@@ -122,13 +122,13 @@ public class FileExplorerPanel extends JPanel {
                 total_time += (System.currentTimeMillis() - start_time);
                 added_imgs += 1;
     
-                updateDebugInfo(max_characters, added_imgs, removed_imgs);
+                updateDebugInfo(total_time, added_imgs, removed_imgs);
             }
         } catch (InterruptedException e) {
 
         }
     
-        updateDebugInfo(max_characters, added_imgs, removed_imgs);
+        updateDebugInfo(total_time, added_imgs, removed_imgs);
 
         if (debug_settings.getValue(DebugTypes.DEBUG_ELAPSED_TIME)) {
             System.out.println("Total time to load images: " + total_time + "ms | Images loaded: " + added_imgs + " | Removed images: " + removed_imgs);
@@ -136,7 +136,7 @@ public class FileExplorerPanel extends JPanel {
             
     }
 
-    protected void updateDebugInfo(int total_time, int added_imgs, int removed_imgs) {
+    protected void updateDebugInfo(long total_time, int added_imgs, int removed_imgs) {
         ConfigDebugSettings debug_settings = (ConfigDebugSettings) this.manager_frame.getConfigs().getConfig(ManagerConfigKeys.DebugSettings);
         if (!debug_settings.getValue(DebugTypes.DEBUG_MENU)) {
             return;
