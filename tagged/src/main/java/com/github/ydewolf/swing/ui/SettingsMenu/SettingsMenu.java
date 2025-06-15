@@ -4,21 +4,15 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.Enum.EnumDesc;
-import java.lang.constant.ClassDesc;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Flow;
-import java.util.concurrent.ConcurrentHashMap.KeySetView;
-import java.util.function.Consumer;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -135,7 +129,23 @@ public class SettingsMenu extends JDialog {
         text_field.setText(stringfied_value);
         panel.add(text_field);
         
-        value_map.put(config.getConfigKey(), () -> {return text_field.getText().trim().split(",");});
+        value_map.put(config.getConfigKey(), () -> {
+            String[] splitted = text_field.getText().split(",");
+            ArrayList<String> extensions = new ArrayList<>();
+            for (int i = 0; i < splitted.length; i++) {
+                if (splitted[i].equals("")) {
+                    continue;
+                }
+                
+                extensions.add(splitted[i].trim());
+            }
+            String[] cut_split = new String[extensions.size()];
+            for (int i = 0; i < cut_split.length; i++) {
+                cut_split[i] = extensions.get(i);
+            }
+
+            return cut_split;
+        });
 
         return panel;
     }
@@ -185,7 +195,7 @@ public class SettingsMenu extends JDialog {
 
         Class<? extends Enum> enum_class = config.getValue().getClass();
 
-        JComboBox dropdown = new JComboBox<>(enum_class.getEnumConstants());
+        JComboBox<Enum<?>> dropdown = new JComboBox<>(enum_class.getEnumConstants());
         dropdown.setSelectedItem(config.getValue());
 
         value_map.put(config.getConfigKey(), () -> {

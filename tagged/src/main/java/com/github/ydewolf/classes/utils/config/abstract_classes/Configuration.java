@@ -5,6 +5,7 @@ import com.github.ydewolf.enums.ManagerConfigKeys;
 
 public abstract class Configuration implements Configurable {
     protected String capitalized_name = "Placeholder config";
+    protected Boolean changed = true;
     protected ManagerConfigKeys tag;
     protected Object value;
 
@@ -17,8 +18,13 @@ public abstract class Configuration implements Configurable {
         return this.tag;
     }
 
+    public boolean getChanged() {
+        return this.changed;
+    }
+
     @Override
     public void setValue(Object new_value) {
+        this.changed = new_value != this.value;
         this.value = new_value;
     }
 

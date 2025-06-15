@@ -13,9 +13,9 @@ import javax.swing.JScrollPane;
 
 import com.github.ydewolf.classes.FileManager;
 import com.github.ydewolf.classes.utils.config.ManagerConfig;
-import com.github.ydewolf.classes.utils.config.abstract_classes.BaseManagerConfig;
 import com.github.ydewolf.enums.DebugTypes;
 import com.github.ydewolf.enums.ExplorerStatus;
+import com.github.ydewolf.enums.ManagerConfigKeys;
 import com.github.ydewolf.swing.ui.FileExplorerPanel.FileExplorerPanel;
 import com.github.ydewolf.swing.ui.FileExplorerPanel.parts.FileExplorerTopPanel;
 import com.github.ydewolf.swing.ui.FileInfoPanel.FileInfoPanel;
@@ -26,7 +26,7 @@ import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
 public class FileManagerFrame extends JFrame {
     protected FileManager file_manager;
-    protected BaseManagerConfig config;
+    protected ManagerConfig config;
 
     protected final String WINDOW_TITLE = "TaggedExplorer-0.0.1";
     protected final String VERSION_TAG = "v0.0.1-ALPHA";
@@ -62,6 +62,8 @@ public class FileManagerFrame extends JFrame {
     protected JPanel horizontal_panel;
     protected DebugPanel debug_panel;
 
+    protected Boolean ready = false;
+
     public FileManagerFrame() {
         this.setup();
     }
@@ -74,6 +76,7 @@ public class FileManagerFrame extends JFrame {
         this.horizontal_panel.add(createFileExplorerPanel());
         
         this.setVisible(true);
+        ready = true;
         this.updateFileExplorer();
     }
 
@@ -170,17 +173,28 @@ public class FileManagerFrame extends JFrame {
     // Updates
 
     public void updateFileExplorer() {
-        this.file_explorer_top_panel.setStatus(ExplorerStatus.LOOKING_THROUGH_FOLDERS);
+        if (ready) {
+            this.file_explorer_top_panel.setStatus(ExplorerStatus.LOOKING_THROUGH_FOLDERS);
+        }
         
         this.file_manager.defaultUpdateChildren();
-        this.file_explorer_top_panel.setStatus(ExplorerStatus.FINISHED_LOOKING_THROUGH_FOLDERS);
+
+        if (ready) {
+             this.file_explorer_top_panel.setStatus(ExplorerStatus.FINISHED_LOOKING_THROUGH_FOLDERS);
+            
+            this.file_explorer_top_panel.setStatus(ExplorerStatus.LOADING_FILES);
+        }
         
-        this.file_explorer_top_panel.setStatus(ExplorerStatus.LOADING_FILES);
-        this.file_explorer_panel.updateContents();
-        this.file_explorer_top_panel.setStatus(ExplorerStatus.FINISHED_LOADING);
+        if (ready) {
+            this.file_explorer_panel.updateContents();
+        }
+        
+        if (ready) {
+            this.file_explorer_top_panel.setStatus(ExplorerStatus.FINISHED_LOADING);
+        }
     }
 
-    public void updateFileManagerConfigs(BaseManagerConfig new_config) {
+    public void updateFileManagerConfigs(ManagerConfig new_config) {
         this.file_manager.loadConfig(new_config);
         this.config = new_config;
 
@@ -190,6 +204,7 @@ public class FileManagerFrame extends JFrame {
             } else {
                 if (!this.config.getDebug(DebugTypes.DEBUG_MENU)) {
                     this.remove(this.debug_panel);
+                    // SwingUtilities.updateComponentTreeUI(this);
                 }
             }
         }
@@ -198,8 +213,8 @@ public class FileManagerFrame extends JFrame {
             this.file_info_panel.updateFolderInfo();
         }
 
-        if (this.config.getChangedRoot()) {
-            startUpdateThread();
+        if (this.config.getChanged(ManagerConfigKeys.RootFolder)) {
+            this.startUpdateThread();
         }
     }
 
@@ -221,17 +236,23 @@ public class FileManagerFrame extends JFrame {
 
     public void startUpdateThread() {
         if (file_loading_thread == null) {
-            createNewUpdateThread();
+            this.createNewUpdateThread();
             file_loading_thread.start();
             return;
         }
 
         if (file_loading_thread.isAlive()) {
-            return;
+            try {
+                file_loading_thread.interrupt();
+                file_loading_thread.join(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // return;
         }
 
         if (file_loading_thread.getState() != Thread.State.NEW) {
-            createNewUpdateThread();
+            this.createNewUpdateThread();
         }
 
         file_loading_thread.start();
@@ -240,6 +261,10 @@ public class FileManagerFrame extends JFrame {
     protected Thread createNewUpdateThread() {
         this.file_loading_thread = new Thread(() -> {
             this.updateFileExplorer();
+
+            if (Thread.currentThread().isInterrupted()) {
+                return;
+            }
         });
         
         return this.file_loading_thread;
@@ -249,7 +274,7 @@ public class FileManagerFrame extends JFrame {
         return this.file_manager;
     }
 
-    public BaseManagerConfig getConfigs() {
+    public ManagerConfig getConfigs() {
         return this.config;
     }
 

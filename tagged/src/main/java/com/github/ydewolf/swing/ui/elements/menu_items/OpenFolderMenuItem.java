@@ -6,7 +6,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 
-import com.github.ydewolf.classes.utils.config.abstract_classes.BaseManagerConfig;
+import com.github.ydewolf.classes.utils.config.ManagerConfig;
+import com.github.ydewolf.enums.ManagerConfigKeys;
 import com.github.ydewolf.swing.FileManagerFrame;
 
 public class OpenFolderMenuItem extends JMenuItem {
@@ -20,8 +21,9 @@ public class OpenFolderMenuItem extends JMenuItem {
                 
                 int option = file_dialog.showOpenDialog(main_panel);
                 if (option == JFileChooser.APPROVE_OPTION) {
-                    BaseManagerConfig config = main_panel.getConfigs();
-                    config.setRoot(file_dialog.getSelectedFile());
+                    ManagerConfig config = main_panel.getConfigs();
+                    config.setConfig(ManagerConfigKeys.RootFolder, file_dialog.getSelectedFile());
+                    // config.setRoot(file_dialog.getSelectedFile());
                     
                     main_panel.updateFileManagerConfigs(config);
                 }

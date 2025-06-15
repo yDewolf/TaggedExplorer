@@ -1,8 +1,11 @@
 package com.github.ydewolf.swing.ui.FileInfoPanel;
 
+import java.io.File;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.github.ydewolf.enums.ManagerConfigKeys;
 import com.github.ydewolf.swing.FileManagerFrame;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
@@ -36,7 +39,7 @@ public class FileInfoPanel extends JPanel {
     public void updateFolderInfo() {
         this.folder_root_label.setText(JavaSwingUtils.truncateString(
                 this.folder_root_label,
-                this.manager.getConfigs().getRoot().getAbsolutePath(),
+                ((File) this.manager.getConfigs().getConfigValue(ManagerConfigKeys.RootFolder)).getAbsolutePath(),
                 this.max_characters
         ));
     }

@@ -42,7 +42,7 @@ public abstract class BaseFileManager {
         this.EXCLUDED_EXTENSIONS = (String[]) config.getConfigValue(ManagerConfigKeys.ExcludedExtensions);
         this.EXCLUDED_FOLDERS = (String[]) config.getConfigValue(ManagerConfigKeys.ExcludedFolders);
 
-        this.root_folder = config.getRoot();
+        this.root_folder = (File) config.getConfigValue(ManagerConfigKeys.RootFolder);
         this.last_updated = System.currentTimeMillis();
         this.never_looked_through = true;
     }
@@ -53,11 +53,32 @@ public abstract class BaseFileManager {
 
         // I think it is optimized now
         File[] filtered_files = this.root_folder.listFiles(new FileFilter() {
+            int file_count = 0;
             @Override
             public boolean accept(File pathname) {
-                return validateFile(pathname);
+                try {
+                    if (file_count >= 10) {
+                        Thread.sleep(0, 1);
+                    }
+
+                    file_count++;
+
+                    return validateFile(pathname);
+
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return false;
+                }
             }
         });
+
+        if (filtered_files == null) {
+            System.err.println("Folder files is null | Caused by an I/O Error (probably) | Path: " + this.root_folder.getAbsolutePath());
+            last_updated = System.currentTimeMillis();
+            this.never_looked_through = false;
+            return;
+        }
+
         if (filtered_files.length == 0) {
             this.child_files.clear();
         }
@@ -75,14 +96,26 @@ public abstract class BaseFileManager {
         }
 
         // Files that should be added to the child files
-        for (File file : filtered_files) {
-            try {
-                String file_path = file.getCanonicalPath();
-                this.child_files.put(file_path, BaseFileManager.createRefFromFile(file));
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace();
+        try {
+            int file_count = 0;
+            for (File file : filtered_files) {
+                if (file_count >= 10) {
+                    file_count = 0;
+                    Thread.sleep(0, 1);
+                }
+                try {
+                    String file_path = file.getCanonicalPath();
+                    this.child_files.put(file_path, BaseFileManager.createRefFromFile(file));
+                } catch (IOException e) {
+                    System.err.println(e.getMessage());
+                    e.printStackTrace();
+                }
+
+                file_count++;
             }
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
 
         last_updated = System.currentTimeMillis();
@@ -91,70 +124,102 @@ public abstract class BaseFileManager {
     
     protected void updateChildFilesRecursive() {
         this.child_folders.clear();
-        ArrayList<FileRef> all_files = this.getChildrenRecursive(root_folder);
+        try {
+            Thread.sleep(0, 5);
 
-        // Remove files that shouldn't be there anymore
-        ArrayList<String> paths_to_remove = new ArrayList<>();
-        for (FileRef file : this.child_files.values()) {
-            if (!file.getPath().contains(this.root_folder.getAbsolutePath()) || !file.getInstance().exists()) {
-                paths_to_remove.add(file.getPath());
+            ArrayList<FileRef> all_files = this.getChildrenRecursive(root_folder);
+            
+            Thread.sleep(0, 5);
+            // Remove files that shouldn't be there anymore
+            ArrayList<String> paths_to_remove = new ArrayList<>();
+            for (FileRef file : this.child_files.values()) {
+                if (!file.getPath().contains(this.root_folder.getAbsolutePath()) || !file.getInstance().exists()) {
+                    paths_to_remove.add(file.getPath());
+                }
             }
-        }
 
-        // Files that should be added to the child files
-        for (FileRef file : all_files) {
-            try {
-                String file_path = file.getInstance().getCanonicalPath();
-                this.child_files.put(file_path, file);
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace();
+            // Files that should be added to the child files
+            for (FileRef file : all_files) {
+                try {
+                    String file_path = file.getInstance().getCanonicalPath();
+                    this.child_files.put(file_path, file);
+                } catch (IOException e) {
+                    System.err.println(e.getMessage());
+                    e.printStackTrace();
+                }
             }
-        }
 
-        for (String path : paths_to_remove) {
-            this.child_files.remove(path);
-        }
+            for (String path : paths_to_remove) {
+                this.child_files.remove(path);
+            }
 
-        last_updated = System.currentTimeMillis();
-        this.never_looked_through = false;
+            last_updated = System.currentTimeMillis();
+            this.never_looked_through = false;
+        } catch (InterruptedException e) {
+            System.out.println("Exiting update files thread");
+            Thread.currentThread().interrupt();
+
+        }
     }
 
     protected ArrayList<FileRef> getChildrenRecursive(File parent_folder) {
         ArrayList<File> folders_to_look = new ArrayList<>();
-
         File[] folder_files = parent_folder.listFiles(new FileFilter() {
+            int folder_count = 0;
             @Override
             public boolean accept(File pathname) {
-                // Add directories so they can be also checked
-                if (pathname.isDirectory()) {
-                    // Skip this folder if it is not valid
-                    if (!FileUtils.checkFileExtension(pathname.getPath(), new String[0],EXCLUDED_FOLDERS)) {
+                try {
+                    // Add directories so they can be also checked
+                    if (pathname.isDirectory()) {
+                        if (folder_count >= 10) {
+                            Thread.sleep(0, 1);
+                        }
+                        folder_count++;
+                        // Skip this folder if it is not valid
+                        if (!FileUtils.checkFileExtension(pathname.getPath(), new String[0], EXCLUDED_FOLDERS)) {
+                            System.out.println("Skipped folder " + pathname.getAbsolutePath() + " | Reason: Excluded Folder");
+                            return false;
+                        }
+                        long last_modified = pathname.lastModified();
+                        if (last_modified > last_updated || never_looked_through) {
+                            folders_to_look.add(pathname);
+                            return false;
+                        }
+    
+                        System.out.println("Skipped folder " + pathname.getAbsolutePath() + " | Reason: Last Modified is greater than last updated");
+    
                         return false;
                     }
-                    long last_modified = pathname.lastModified();
-                    if (last_modified > last_updated || never_looked_through) {
-                        folders_to_look.add(pathname);
-                        return false;
-                    }
-                    System.out.println("Skipped folder " + pathname.getAbsolutePath());
-
+                    
+                    return validateFile(pathname);
+                    
+                } catch (InterruptedException e) {
+                    // System.out.println("WARNING: Overriding update file thread!!");
+                    Thread.currentThread().interrupt();
                     return false;
                 }
-                
-                return validateFile(pathname);
             }
         });
 
         // Recursion
         ArrayList<FileRef> files = new ArrayList<>();
-        for (File directory : folders_to_look) {
-            this.child_folders.put(directory.getAbsolutePath(), (DirRef) BaseFileManager.createRefFromFile(directory));
-
-            ArrayList<FileRef> files_to_add = this.getChildrenRecursive(directory);
-            for (FileRef fileRef : files_to_add) {
-                files.add(fileRef);
+        try {
+            int folder_count = 0;
+            for (File directory : folders_to_look) {
+                if (folder_count >= 5) {
+                    folder_count = 0;
+                    Thread.sleep(0, 2);
+                }
+                folder_count++;
+                this.child_folders.put(directory.getAbsolutePath(), (DirRef) BaseFileManager.createRefFromFile(directory));
+    
+                ArrayList<FileRef> files_to_add = this.getChildrenRecursive(directory);
+                for (FileRef fileRef : files_to_add) {
+                    files.add(fileRef);
+                }
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
 
         if (folder_files == null) {

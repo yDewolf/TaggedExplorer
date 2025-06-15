@@ -1,6 +1,6 @@
 package com.github.ydewolf.classes;
 
-import com.github.ydewolf.classes.utils.config.abstract_classes.BaseManagerConfig;
+import com.github.ydewolf.classes.utils.config.ManagerConfig;
 import com.github.ydewolf.enums.ChildFilesMethods;
 import com.github.ydewolf.enums.DebugTypes;
 import com.github.ydewolf.enums.ManagerConfigKeys;
@@ -20,7 +20,7 @@ public class FileManager extends BaseFileManager {
         super();
     }
 
-    public void loadConfig(BaseManagerConfig config) {
+    public void loadConfig(ManagerConfig config) {
         super.loadConfig(config);
 
         this.child_search_method = (ChildFilesMethods) config.getConfigValue(ManagerConfigKeys.FileSearchMethod);
