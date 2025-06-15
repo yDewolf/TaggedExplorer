@@ -1,6 +1,5 @@
 package com.github.ydewolf.swing.ui.SettingsMenu;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -11,7 +10,6 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
