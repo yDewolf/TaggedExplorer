@@ -1,6 +1,8 @@
 package com.github.ydewolf.swing;
 
 import java.awt.Dimension;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
@@ -33,7 +35,7 @@ public class FileManagerFrame extends JFrame {
     protected ManagerConfig config;
 
     protected final String WINDOW_TITLE = "TaggedExplorer";
-    protected final String VERSION_TAG = "v0.5.0-BETA";
+    protected final String VERSION_TAG = "v0.5.3-beta";
 
     // Scales only the window size
     // Also updates SIZE_X and SIZE_Y
@@ -121,6 +123,15 @@ public class FileManagerFrame extends JFrame {
         explorer_view.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         explorer_view.getVerticalScrollBar().setUnitIncrement(16);
 
+        // Responsivity
+        explorer_view.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                int target_width = (int) file_explorer_panel.getVisibleRect().getWidth();
+                file_explorer_panel.updateLayout(target_width);
+            }
+        });
+
         panel.add(explorer_view);
 
 
@@ -140,7 +151,7 @@ public class FileManagerFrame extends JFrame {
         this.setupFileManager();
         this.file_select_handler = new FileSelectHandler(file_manager);
 
-        this.setResizable(false);
+        this.setResizable(true);
         this.setTitle(this.WINDOW_TITLE);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         

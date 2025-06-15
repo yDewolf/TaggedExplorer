@@ -10,6 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -54,7 +55,6 @@ public class JavaSwingUtils {
         if (JavaSwingUtils.DEBUG_MODE) {
             Random rand = new Random();
             Color debug_color = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
-            // panel.setBackground(JavaSwingUtils.DEBUG_COLOR);
             panel.setBackground(debug_color);
         }
     }
@@ -62,6 +62,18 @@ public class JavaSwingUtils {
     public static void setupJComponentDim(JComponent component, int width, int height) {
         Dimension dim = new Dimension(width, height);
         component.setSize(dim);
+        if (component instanceof JPanel) {
+            if (component.getLayout() instanceof GridLayout) {
+                component.setMaximumSize(new Dimension(width * 10, height));
+                return;
+            }
+            return;
+        }
+        if (component instanceof JMenuBar || component instanceof JTextField || component instanceof JLabel) {
+            component.setMaximumSize(new Dimension(width * 10, height));
+            return;
+        }
+
         component.setMaximumSize(dim);
     }
 

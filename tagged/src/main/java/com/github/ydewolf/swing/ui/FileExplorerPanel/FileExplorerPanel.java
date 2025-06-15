@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -28,15 +29,27 @@ public class FileExplorerPanel extends JPanel {
     final protected int IMAGE_SIZE_X = 128;
     final protected int IMAGE_SIZE_Y = 96;
 
+    protected int border_size;
+    protected GridLayout layout;
+    public int target_width;
+
     public FileExplorerPanel(FileManagerFrame manager, int width, int height, int border_size) {
         this.manager_frame = manager;
+        this.border_size = border_size;
         this.img_panels = new HashMap<>();
+        target_width = width;
 
         JavaSwingUtils.setupJComponentDim(this, width, height);
-        int column_count = Math.floorDiv(width, IMAGE_SIZE_X + (border_size * 2)) - 1;
-        this.setLayout(new GridLayout(0, column_count));
+        this.layout = new GridLayout(0, 1);
+        this.setLayout(this.layout);
 
-        // updateContents();
+        this.updateLayout(width);
+    }
+
+    public void updateLayout(int new_width) {
+        int column_count = Math.max(1, (int) Math.floor(new_width / (IMAGE_SIZE_X + (border_size * 2))) - 1);
+
+        this.layout.setColumns(column_count);
     }
 
     public void updateContents() {

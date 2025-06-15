@@ -53,6 +53,7 @@ public class SettingsMenu extends JDialog {
         this.width = width;
         this.height = height;
         this.EXCLUDED_SETTINGS = excluded_settings;
+        this.setResizable(false);
         this.setSize(width, height);
         
         JPanel main_panel = new JPanel();

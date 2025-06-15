@@ -1,5 +1,6 @@
 package com.github.ydewolf.swing.ui.elements;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
@@ -17,6 +18,7 @@ public class DebugPanel extends JPanel {
 
     public DebugPanel(int width, int height, int border_size) {
         JavaSwingUtils.setupJPanel(this, width, height, border_size);
+        this.setMaximumSize(new Dimension(width * 10, height));
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         JPanel left_panel = new JPanel();
