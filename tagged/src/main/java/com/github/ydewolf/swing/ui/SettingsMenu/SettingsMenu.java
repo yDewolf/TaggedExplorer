@@ -1,5 +1,7 @@
 package com.github.ydewolf.swing.ui.SettingsMenu;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -47,8 +49,9 @@ public class SettingsMenu extends JDialog {
         // this.setLocationRelativeTo(manager_frame);
         
         JPanel main_panel = new JPanel();
-        main_panel.setLayout(new BoxLayout(main_panel, BoxLayout.Y_AXIS));
-        JavaSwingUtils.setupJComponentDim(main_panel, width, height);
+        JavaSwingUtils.setupJPanel(main_panel, width, height, border_size);
+        // main_panel.setLayout(new BoxLayout(main_panel, BoxLayout.Y_AXIS));
+        // JavaSwingUtils.setupJComponentDim(main_panel, width, height);
         this.add(main_panel);
 
         this.save_button = new JButton("Save");
@@ -79,6 +82,8 @@ public class SettingsMenu extends JDialog {
             }
         });
         button_panel.add(close_button);
+
+        this.pack();
     }
 
     public void addConfigOption(JPanel main_panel, ManagerConfigKeys config_key) {
@@ -109,7 +114,7 @@ public class SettingsMenu extends JDialog {
     protected JPanel optionForArrayConfig(BaseArrayConfiguration config) {
         JPanel panel = new JPanel();
         JavaSwingUtils.setupJComponentDim(panel, this.width, 20);
-        panel.setLayout(new FlowLayout());
+        panel.setLayout(new GridLayout(1, 2));
 
         JLabel label = new JLabel(config.getName());
         panel.add(label);
@@ -161,7 +166,7 @@ public class SettingsMenu extends JDialog {
 
         for (Enum<?> key : key_set) {
             JPanel key_row = new JPanel();
-            key_row.setLayout(new FlowLayout());
+            key_row.setLayout(new GridLayout(1, 2));
             
             JLabel key_label = new JLabel(key.toString());
             key_row.add(key_label);
@@ -189,7 +194,9 @@ public class SettingsMenu extends JDialog {
 
     protected JPanel optionForSelectEnumConfig(BaseSelectEnumConfiguration config) {
         JPanel panel = new JPanel();
-        
+        panel.setLayout(new GridLayout(1, 2));
+        panel.setMaximumSize(new Dimension(width, 20));
+
         JLabel label = new JLabel(config.getName());
         panel.add(label);
 
