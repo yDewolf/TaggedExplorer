@@ -1,6 +1,5 @@
 package com.github.ydewolf.swing.ui.FileInfoPanel;
 
-import java.awt.BorderLayout;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -45,10 +44,10 @@ public class FileInfoPanel extends JPanel {
 
         JavaSwingUtils.setupJPanel(this, width, height, border_size);
 
-        this.setupLabels();
+        this.setup();
     }
 
-    public void setupLabels() {
+    public void setup() {
         JPanel top_panel = new JPanel();
         JavaSwingUtils.setupJPanel(top_panel, width, field_height, border_size);
         this.add(top_panel);
@@ -64,10 +63,10 @@ public class FileInfoPanel extends JPanel {
             ImageView image_view = new ImageView(width, width);
             this.image_label = image_view.getImageLabel();
 
-            image_view_holder.add(image_view, BorderLayout.CENTER);
+            image_view_holder.add(image_view);
 
             this.image_controls = new ImageControls(this, width, 40);
-            image_view_holder.add(image_controls, BorderLayout.SOUTH);
+            image_view_holder.add(image_controls);
         }
 
         JPanel panel = new JPanel();

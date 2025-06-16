@@ -23,6 +23,7 @@ import com.github.ydewolf.classes.utils.config.abstract_classes.BaseArrayConfigu
 import com.github.ydewolf.classes.utils.config.abstract_classes.BaseEnumConfiguration;
 import com.github.ydewolf.classes.utils.config.abstract_classes.BaseSelectEnumConfiguration;
 import com.github.ydewolf.classes.utils.config.abstract_classes.Configuration;
+import com.github.ydewolf.enums.DebugTypes;
 import com.github.ydewolf.enums.ManagerConfigKeys;
 import com.github.ydewolf.swing.FileManagerFrame;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
@@ -175,8 +176,6 @@ public class SettingsMenu extends JDialog {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1));
 
-
-
         Set<Enum<?>> key_set = config.getValues().keySet();
 
         for (Enum<?> key : key_set) {
@@ -198,7 +197,8 @@ public class SettingsMenu extends JDialog {
         value_map.put(config.getConfigKey(), () -> {
             HashMap<Enum<?>, Boolean> hash_map = new HashMap<>();
             for (Enum<?> key : key_set) {
-                hash_map.put(key, this.checkbox_map.get(key).isSelected());
+                JCheckBox checkbox = this.checkbox_map.get(key);
+                hash_map.put(key, checkbox.isSelected());
             }
 
             return hash_map;
@@ -236,7 +236,8 @@ public class SettingsMenu extends JDialog {
         for (ManagerConfigKeys key : this.value_map.keySet()) {
             Callable<Object> lambda = this.value_map.get(key);
             try {
-                new_config.setConfig(key, lambda.call());
+                Object new_value = lambda.call();
+                new_config.setConfig(key, new_value);
             } catch (Exception e) {
                 System.err.println("Couldn't run lambda function to get value for " + key + " configuration");
                 e.printStackTrace();

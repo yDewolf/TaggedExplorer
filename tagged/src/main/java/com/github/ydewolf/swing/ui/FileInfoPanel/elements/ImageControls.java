@@ -26,6 +26,7 @@ public class ImageControls extends JPanel {
 
         // this.setOpaque(false);
         this.setPreferredSize(new Dimension(width, height));
+        this.setMaximumSize(new Dimension(width, height));
         
         // Controls
         {   

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.github.ydewolf.enums.ManagerConfigKeys;
 
 public abstract class BaseEnumConfiguration extends Configuration {
-    protected HashMap<Enum<?>, Boolean> value = new HashMap<>();
+    protected HashMap<Enum<?>, Boolean> values = new HashMap<>();
     protected Class<?> base_enum;
 
     public BaseEnumConfiguration(ManagerConfigKeys tag, Object default_value) {
@@ -14,19 +14,19 @@ public abstract class BaseEnumConfiguration extends Configuration {
     
     @Override
     public void setValue(Object new_value) {
-        this.value = (HashMap<Enum<?>, Boolean>) new_value;
+        this.values = (HashMap<Enum<?>, Boolean>) new_value;
     }
 
     public void setValue(Enum<?> key, Boolean value) {
-        this.value.put(key, value);
+        this.values.put(key, value);
     }
 
     public Boolean getValue(Enum<?> key) {
-        return this.value.get(key);
+        return this.values.get(key);
     }
 
     public HashMap<Enum<?>, Boolean> getValues() {
-        return this.value;
+        return this.values;
     }
 
     public Class<?> getEnumBase() {

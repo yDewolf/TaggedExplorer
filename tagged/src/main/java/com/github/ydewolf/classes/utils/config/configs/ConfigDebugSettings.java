@@ -14,22 +14,22 @@ public class ConfigDebugSettings extends BaseEnumConfiguration {
         this.capitalized_name = "Debug Settings";
         
         for (DebugTypes type : DebugTypes.values()) {
-            this.value.put(type, false);
+            this.values.put(type, false);
         }
 
-        this.value.put(DebugTypes.DEBUG_MENU, true);
-        this.value.put(DebugTypes.DEBUG_PANELS, false);
-        this.value.put(DebugTypes.DEBUG_FILE_MANAGER, true);
+        this.values.put(DebugTypes.DEBUG_MENU, true);
+        this.values.put(DebugTypes.DEBUG_PANELS, false);
+        this.values.put(DebugTypes.DEBUG_FILE_MANAGER, true);
     }
 
     public void setValue(DebugTypes key, Boolean value) {
-        if (value != this.value.get(key)) {
+        if (value != this.values.get(key)) {
             this.changed = true;
         }
-        this.value.put(key, value);
+        this.values.put(key, value);
     }
 
     public Boolean getValue(DebugTypes key) {
-        return this.value.get(key);
+        return this.values.get(key);
     }
 }

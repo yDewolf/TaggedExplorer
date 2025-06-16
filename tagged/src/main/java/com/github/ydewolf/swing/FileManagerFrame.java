@@ -231,8 +231,8 @@ public class FileManagerFrame extends JFrame {
         this.file_manager.loadConfig(new_config);
         this.config = new_config;
 
-        if (debug_panel != null && this.config.getChanged(ManagerConfigKeys.DebugSettings)) {
-            if (this.config.getDebug(DebugTypes.DEBUG_MENU)) {
+        if (debug_panel != null && new_config.getChanged(ManagerConfigKeys.DebugSettings)) {
+            if (new_config.getDebug(DebugTypes.DEBUG_MENU)) {
                 this.add(this.debug_panel);
             } else {
                 this.remove(this.debug_panel);
@@ -244,7 +244,7 @@ public class FileManagerFrame extends JFrame {
             this.file_info_panel.updateFolderInfo();
         }
 
-        if (this.config.getChanged(ManagerConfigKeys.RootFolder)) {
+        if (new_config.getChanged(ManagerConfigKeys.RootFolder)) {
             this.startUpdateThread();
         }
     }
