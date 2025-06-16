@@ -1,18 +1,21 @@
 package com.github.ydewolf.swing.ui.FileInfoPanel;
 
-import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import com.github.ydewolf.classes.Files.FileRef;
 import com.github.ydewolf.enums.ManagerConfigKeys;
 import com.github.ydewolf.swing.FileManagerFrame;
+import com.github.ydewolf.swing.ui.FileInfoPanel.elements.ImageView;
+import com.github.ydewolf.swing.ui.FileInfoPanel.elements.ImageControls;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
 public class FileInfoPanel extends JPanel {
@@ -29,6 +32,10 @@ public class FileInfoPanel extends JPanel {
 
     protected JTextField filename_field;
     protected JTextField file_path_field;
+
+    protected BufferedImage full_image;
+    
+    protected ImageControls image_controls;
 
     public FileInfoPanel(FileManagerFrame manager, int width, int height, int border_size) {
         this.manager = manager;
@@ -49,16 +56,18 @@ public class FileInfoPanel extends JPanel {
         this.folder_root_field = JavaSwingUtils.createTextfieldRow(top_panel, "Root folder:", width, field_height);
         // Setup image view
         {
-            JScrollPane image_view = new JScrollPane();
-            image_view.getVerticalScrollBar().setUnitIncrement(16);
-            image_view.getHorizontalScrollBar().setUnitIncrement(16);
-    
-            this.image_label = new JLabel();
+            JPanel image_view_holder = new JPanel();
+            image_view_holder.setLayout(new BoxLayout(image_view_holder, BoxLayout.Y_AXIS));
+            // image_view_holder.setLayout(new OverlayLayout(image_view_holder));
+            this.add(image_view_holder);
 
-            image_view.setViewportView(image_label);
-            image_view.setPreferredSize(new Dimension(width, width));
+            ImageView image_view = new ImageView(width, width);
+            this.image_label = image_view.getImageLabel();
 
-            this.add(image_view);
+            image_view_holder.add(image_view, BorderLayout.CENTER);
+
+            this.image_controls = new ImageControls(this, width, 40);
+            image_view_holder.add(image_controls, BorderLayout.SOUTH);
         }
 
         JPanel panel = new JPanel();
@@ -93,9 +102,24 @@ public class FileInfoPanel extends JPanel {
 
     public void updateSelectedImage() {
         updateFileInfo();
-        BufferedImage image = this.manager.getSelectHandler().getSelectedFileAsImage(0, 0);
-        this.image_label.setText("");
+        
+        this.full_image = this.manager.getSelectHandler().getSelectedFileAsImage(0, 0);
+        updateImage();
+    }
+    
+    public void updateImage() {
+        if (this.full_image == null) {
+            return;
+        }
 
-        this.image_label.setIcon(new ImageIcon(image));
+        int newImageWidth = (int) (full_image.getWidth() * this.image_controls.getZoomLevel());
+        int newImageHeight = (int) (full_image.getHeight() * this.image_controls.getZoomLevel());
+
+        BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(full_image, 0, 0, newImageWidth, newImageHeight, null);
+        g.dispose();
+
+        this.image_label.setIcon(new ImageIcon(resizedImage));
     }
 }

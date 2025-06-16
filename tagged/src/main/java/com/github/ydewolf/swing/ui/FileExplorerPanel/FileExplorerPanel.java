@@ -47,7 +47,7 @@ public class FileExplorerPanel extends JPanel {
     }
 
     public void updateLayout(int new_width) {
-        int column_count = Math.max(1, (int) Math.floor(new_width / (IMAGE_SIZE_X + (border_size * 2))) - 1);
+        int column_count = Math.max(1, (int) Math.floor(new_width / (IMAGE_SIZE_X)) - 1);
 
         this.layout.setColumns(column_count);
     }
