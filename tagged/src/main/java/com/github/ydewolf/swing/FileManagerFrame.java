@@ -1,15 +1,17 @@
 package com.github.ydewolf.swing;
 
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -20,22 +22,24 @@ import com.github.ydewolf.classes.utils.config.ManagerConfig;
 import com.github.ydewolf.enums.DebugTypes;
 import com.github.ydewolf.enums.ExplorerStatus;
 import com.github.ydewolf.enums.ManagerConfigKeys;
+import com.github.ydewolf.swing.ColorThemes.ColorTheme;
 import com.github.ydewolf.swing.ui.FileExplorerPanel.FileExplorerPanel;
 import com.github.ydewolf.swing.ui.FileExplorerPanel.parts.FileExplorerTopPanel;
 import com.github.ydewolf.swing.ui.FileInfoPanel.FileInfoPanel;
 import com.github.ydewolf.swing.ui.SettingsMenu.SettingsMenu;
 import com.github.ydewolf.swing.ui.elements.DebugPanel;
-import com.github.ydewolf.swing.ui.elements.menu_items.OpenFolderMenuItem;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
 public class FileManagerFrame extends JFrame {
     protected FileManager file_manager;
     protected FileSelectHandler file_select_handler;
 
+    static final String FONT_RESOURCE_PATH = "/fonts/Roboto-Medium.ttf";
+
     protected ManagerConfig config;
 
     protected final String WINDOW_TITLE = "TaggedExplorer";
-    protected final String VERSION_TAG = "v0.5.3-beta";
+    protected final String VERSION_TAG = "v0.5.5-beta";
 
     // Scales only the window size
     // Also updates SIZE_X and SIZE_Y
@@ -86,22 +90,19 @@ public class FileManagerFrame extends JFrame {
         this.setVisible(true);
         ready = true;
         this.updateFileExplorer();
-    }
+        
+        try {
+            InputStream is = FileManagerFrame.class.getResourceAsStream(FONT_RESOURCE_PATH);
+            Font font = Font.createFont(Font.TRUETYPE_FONT, is);
+            
+            JavaSwingUtils.setFontRecursive(this, font.deriveFont(12f));
 
-    @SuppressWarnings("unused")
-    private JComponent createNavbar() {
-        JMenuBar navbar = new JMenuBar();
-        JavaSwingUtils.setupJComponentDim(navbar, SIZE_X, NAVBAR_HEIGHT);
-
-        JMenu file_menu = new JMenu("Directory");
-        navbar.add(file_menu);
-        // Add MenuItems to file_menu
-        {
-            OpenFolderMenuItem open_folder_item = new OpenFolderMenuItem(this, this.file_dialog);
-            file_menu.add(open_folder_item);
-        }
-
-        return navbar;
+        } catch (FontFormatException | IOException e) { }
+        
+        ColorTheme default_theme = new ColorTheme() {
+            
+        };
+        JavaSwingUtils.applyThemeRecursive(rootPane, default_theme);
     }
 
     private JComponent createFileExplorerPanel() {

@@ -1,7 +1,10 @@
 package com.github.ydewolf.swing.utils;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GridLayout;
 import java.util.Random;
@@ -14,7 +17,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.github.ydewolf.swing.ColorThemes.ColorTheme;
+
 public class JavaSwingUtils {
+
     static final boolean DEBUG_MODE = false;
     static final Color DEBUG_COLOR = new Color(225, 52, 235);
 
@@ -61,7 +67,7 @@ public class JavaSwingUtils {
 
     public static void setupJComponentDim(JComponent component, int width, int height) {
         Dimension dim = new Dimension(width, height);
-        component.setSize(dim);
+        component.setSize(dim);        
         if (component instanceof JPanel) {
             if (component.getLayout() instanceof GridLayout) {
                 component.setMaximumSize(new Dimension(width * 10, height));
@@ -108,4 +114,21 @@ public class JavaSwingUtils {
         return JavaSwingUtils.getMaxCharacters(label, "...");
     }
 
+    public static void setFontRecursive(Component component, Font font) {
+        component.setFont(font);
+        if (component instanceof Container) {
+            for (Component child : ((Container) component).getComponents()) {
+                JavaSwingUtils.setFontRecursive(child, font);            
+            }
+        }
+    }
+
+    public static void applyThemeRecursive(Component component, ColorTheme theme) {
+        theme.applyToComponent(component);
+        if (component instanceof Container) {
+            for (Component child : ((Container) component).getComponents()) {
+                JavaSwingUtils.applyThemeRecursive(child, theme);
+            }
+        }
+    }
 }
