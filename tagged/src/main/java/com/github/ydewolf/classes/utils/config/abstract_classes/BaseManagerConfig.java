@@ -42,7 +42,7 @@ public abstract class BaseManagerConfig {
         return ((Configuration) this.configurations.get(config_key)).getValue();
     }
 
-    public void setConfig(ManagerConfigKeys config_key, Object value) {
+    public void setConfigValue(ManagerConfigKeys config_key, Object value) {
         this.getConfig(config_key).setValue(value);
     }
 

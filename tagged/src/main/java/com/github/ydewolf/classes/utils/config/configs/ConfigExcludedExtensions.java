@@ -14,10 +14,9 @@ public class ConfigExcludedExtensions extends BaseArrayConfiguration {
         this.capitalized_name = "Excluded Extensions";
     }
 
-
-
-    public void setValue(String[] new_value) {
-        this.value = new_value;
+    @Override
+    public void setValue(Object new_value) {
+        this.value = (String[]) new_value;
     }
 
     @Override

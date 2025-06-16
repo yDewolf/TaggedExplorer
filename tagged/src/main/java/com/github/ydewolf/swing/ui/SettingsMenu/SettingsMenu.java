@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -17,20 +19,21 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import com.github.ydewolf.classes.utils.config.ManagerConfig;
 import com.github.ydewolf.classes.utils.config.abstract_classes.BaseArrayConfiguration;
 import com.github.ydewolf.classes.utils.config.abstract_classes.BaseEnumConfiguration;
 import com.github.ydewolf.classes.utils.config.abstract_classes.BaseSelectEnumConfiguration;
 import com.github.ydewolf.classes.utils.config.abstract_classes.Configuration;
-import com.github.ydewolf.enums.DebugTypes;
 import com.github.ydewolf.enums.ManagerConfigKeys;
 import com.github.ydewolf.swing.FileManagerFrame;
 import com.github.ydewolf.swing.utils.JavaSwingUtils;
 
 public class SettingsMenu extends JDialog {
     protected FileManagerFrame manager_frame;
-    protected HashMap<ManagerConfigKeys, Callable<Object>> value_map = new HashMap<>();
+    protected HashMap<ManagerConfigKeys, Object> value_map = new HashMap<>();
     protected HashMap<Enum<?>, JCheckBox> checkbox_map = new HashMap<>();
     protected ManagerConfigKeys[] EXCLUDED_SETTINGS = {};
 
@@ -55,7 +58,6 @@ public class SettingsMenu extends JDialog {
         this.height = height;
         this.EXCLUDED_SETTINGS = excluded_settings;
         this.setResizable(false);
-        this.setSize(width, height);
         
         JPanel main_panel = new JPanel();
         JavaSwingUtils.setupJPanel(main_panel, width, height, border_size);
@@ -65,14 +67,7 @@ public class SettingsMenu extends JDialog {
         this.save_button = new JButton("Save");
 
         for (ManagerConfigKeys key : ManagerConfigKeys.values()) {
-            boolean ignore = false;
-            for (ManagerConfigKeys excluded : excluded_settings) {
-                if (key == excluded) {
-                    ignore = true;
-                    break;
-                }
-            }
-            if (ignore) { continue; }
+            if (this.isExcludedConfigKey(key)) { continue; }
 
             this.addConfigOption(main_panel, key);
         }
@@ -150,23 +145,37 @@ public class SettingsMenu extends JDialog {
 
         text_field.setText(stringfied_value);
         panel.add(text_field);
-        
-        value_map.put(config.getConfigKey(), () -> {
-            String[] splitted = text_field.getText().split(",");
-            ArrayList<String> extensions = new ArrayList<>();
-            for (int i = 0; i < splitted.length; i++) {
-                if (splitted[i].equals("")) {
-                    continue;
-                }
-                
-                extensions.add(splitted[i].trim());
-            }
-            String[] cut_split = new String[extensions.size()];
-            for (int i = 0; i < cut_split.length; i++) {
-                cut_split[i] = extensions.get(i);
+        value_map.put(config.getConfigKey(), config.getValue());
+    
+        text_field.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                this.changedUpdate(e);
             }
 
-            return cut_split;
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                this.changedUpdate(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                String[] splitted = text_field.getText().split(",");
+                ArrayList<String> extensions = new ArrayList<>();
+                for (int i = 0; i < splitted.length; i++) {
+                    if (splitted[i].equals("")) {
+                        continue;
+                    }
+                    
+                    extensions.add(splitted[i].trim());
+                }
+                String[] cut_split = new String[extensions.size()];
+                for (int i = 0; i < cut_split.length; i++) {
+                    cut_split[i] = extensions.get(i);
+                }
+
+                value_map.put(config.getConfigKey(), cut_split);
+            }
         });
 
         return panel;
@@ -186,7 +195,7 @@ public class SettingsMenu extends JDialog {
             key_row.add(key_label);
 
             JCheckBox checkbox = new JCheckBox();
-            checkbox.setSelected(config.getValue(key));
+            checkbox.setSelected(config.getKeyValue(key));
             key_row.add(checkbox);
 
             this.checkbox_map.put(key, checkbox);
@@ -194,15 +203,29 @@ public class SettingsMenu extends JDialog {
             panel.add(key_row);
         }
 
-        value_map.put(config.getConfigKey(), () -> {
-            HashMap<Enum<?>, Boolean> hash_map = new HashMap<>();
-            for (Enum<?> key : key_set) {
-                JCheckBox checkbox = this.checkbox_map.get(key);
-                hash_map.put(key, checkbox.isSelected());
-            }
+        HashMap<Enum<?>, Boolean> hash_map = new HashMap<>();
+        value_map.put(config.getConfigKey(), hash_map);
 
-            return hash_map;
-        });
+        for (Enum<?> key : key_set) {
+            JCheckBox checkbox = this.checkbox_map.get(key);
+            hash_map.put(key, checkbox.isSelected());
+            checkbox.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    hash_map.put(key, checkbox.isSelected());
+                    value_map.put(config.getConfigKey(), hash_map);
+
+                    // Debug results
+                    // for (Enum<?> key : hash_map.keySet()) {
+                    //     System.out.println(key + " " + hash_map.get(key));
+                    //     System.out.println();
+                    //     for(Enum<?> keya : ((HashMap<Enum<?>, Boolean>) value_map.get(config.getConfigKey())).keySet()) {
+                    //         System.out.println(keya + " " + ((HashMap<Enum<?>, Boolean>) value_map.get(config.getConfigKey())).get(keya));
+                    //     }
+                    // }
+                }
+            });
+        }
 
         return panel;
     }
@@ -218,10 +241,17 @@ public class SettingsMenu extends JDialog {
         Class<? extends Enum> enum_class = config.getValue().getClass();
 
         JComboBox<Enum<?>> dropdown = new JComboBox<>(enum_class.getEnumConstants());
+        value_map.put(config.getConfigKey(), config.getValue());
+        
         dropdown.setSelectedItem(config.getValue());
-
-        value_map.put(config.getConfigKey(), () -> {
-            return dropdown.getSelectedItem();
+        dropdown.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    Enum<?> item = (Enum<?>) e.getItem();
+                    value_map.put(config.getConfigKey(), item);
+                }
+            }
         });
 
         panel.add(dropdown);
@@ -233,15 +263,15 @@ public class SettingsMenu extends JDialog {
 
     public void updateConfiguration() {
         ManagerConfig new_config = new ManagerConfig();
-        for (ManagerConfigKeys key : this.value_map.keySet()) {
-            Callable<Object> lambda = this.value_map.get(key);
-            try {
-                Object new_value = lambda.call();
-                new_config.setConfig(key, new_value);
-            } catch (Exception e) {
-                System.err.println("Couldn't run lambda function to get value for " + key + " configuration");
-                e.printStackTrace();
+        for (ManagerConfigKeys key : ManagerConfigKeys.values()) {
+            if (this.isExcludedConfigKey(key)) {
+                Object new_value = this.manager_frame.getConfigs().getConfigValue(key);
+                new_config.setConfigValue(key, new_value);
+                continue;
             }
+
+            Object new_value = this.value_map.get(key);
+            new_config.setConfigValue(key, new_value);
         }
 
         this.manager_frame.updateFileManagerConfigs(new_config);
@@ -257,5 +287,15 @@ public class SettingsMenu extends JDialog {
         separator.add(label);
 
         return separator;
+    }
+
+    protected boolean isExcludedConfigKey(ManagerConfigKeys key) {
+        for (ManagerConfigKeys excluded : this.EXCLUDED_SETTINGS) {
+            if (key == excluded) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

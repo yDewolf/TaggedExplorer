@@ -14,12 +14,9 @@ public class ConfigExcludedFolders extends BaseArrayConfiguration {
         this.capitalized_name = "Excluded Folders";
     }
 
-    public void fromString(String string, String separator) {
-        this.setValue(string.split(separator));
-    }
-
-    public void setValue(String[] new_value) {
-        this.value = new_value;
+    @Override
+    public void setValue(Object new_value) {
+        this.value = (String[]) new_value;
     }
 
     @Override

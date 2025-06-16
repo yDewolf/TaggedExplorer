@@ -228,6 +228,12 @@ public class FileManagerFrame extends JFrame {
     }
 
     public void updateFileManagerConfigs(ManagerConfig new_config) {
+        if (file_loading_thread != null) {
+            if (this.file_loading_thread.isAlive()) {
+                this.file_loading_thread.interrupt();
+            }
+        }
+
         this.file_manager.loadConfig(new_config);
         this.config = new_config;
 

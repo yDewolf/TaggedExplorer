@@ -15,7 +15,13 @@ public class ConfigValidExtensions extends BaseArrayConfiguration {
         this.capitalized_name = "Valid Extensions";
     }
 
-    public void fromString(String string, String separator) {
-        this.setValue(string.split(separator));
+    @Override
+    public void setValue(Object new_value) {
+        this.value = (String[]) new_value;
+    }
+
+    @Override
+    public String[] getValue() {
+        return (String[]) this.value;
     }
 }

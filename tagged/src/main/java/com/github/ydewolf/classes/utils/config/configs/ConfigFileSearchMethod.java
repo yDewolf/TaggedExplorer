@@ -15,8 +15,9 @@ public class ConfigFileSearchMethod extends BaseSelectEnumConfiguration {
         this.capitalized_name = "File Search Method";
     }
 
-    public void setValue(ChildFilesMethods new_value) {
-        this.value = new_value;
+    @Override
+    public void setValue(Object new_value) {
+        this.value = (ChildFilesMethods) new_value;
     }
 
     @Override

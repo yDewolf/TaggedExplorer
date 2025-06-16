@@ -13,20 +13,28 @@ public abstract class BaseEnumConfiguration extends Configuration {
     }
     
     @Override
+    public Object getValue() {
+        return this.values;
+    }
+
+    @Override
     public void setValue(Object new_value) {
         this.values = (HashMap<Enum<?>, Boolean>) new_value;
     }
 
-    public void setValue(Enum<?> key, Boolean value) {
-        this.values.put(key, value);
-    }
-
-    public Boolean getValue(Enum<?> key) {
-        return this.values.get(key);
-    }
-
     public HashMap<Enum<?>, Boolean> getValues() {
         return this.values;
+    }
+
+    public void setKeyValue(Enum<?> key, Boolean new_value) {
+        if (new_value != this.values.get(key)) {
+            this.changed = true;
+        }
+        this.values.put(key, new_value);
+    }
+
+    public Boolean getKeyValue(Enum<?> key) {
+        return this.values.get(key);
     }
 
     public Class<?> getEnumBase() {

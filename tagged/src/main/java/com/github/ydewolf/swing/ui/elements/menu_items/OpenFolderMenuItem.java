@@ -22,7 +22,7 @@ public class OpenFolderMenuItem extends JMenuItem {
                 int option = file_dialog.showOpenDialog(main_panel);
                 if (option == JFileChooser.APPROVE_OPTION) {
                     ManagerConfig config = main_panel.getConfigs();
-                    config.setConfig(ManagerConfigKeys.RootFolder, file_dialog.getSelectedFile());
+                    config.setConfigValue(ManagerConfigKeys.RootFolder, file_dialog.getSelectedFile());
                     // config.setRoot(file_dialog.getSelectedFile());
                     
                     main_panel.updateFileManagerConfigs(config);

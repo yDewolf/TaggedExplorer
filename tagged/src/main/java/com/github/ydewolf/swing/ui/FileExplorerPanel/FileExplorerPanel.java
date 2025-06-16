@@ -106,7 +106,7 @@ public class FileExplorerPanel extends JPanel {
                 button_holder.setMaximumSize(new Dimension(IMAGE_SIZE_X, IMAGE_SIZE_Y));
                 
                 // Debug Panels
-                if (debug_settings.getValue(DebugTypes.DEBUG_PANELS)) {
+                if (debug_settings.getKeyValue(DebugTypes.DEBUG_PANELS)) {
                     button_holder.setBackground(Color.black);
                 }
     
@@ -128,7 +128,7 @@ public class FileExplorerPanel extends JPanel {
                 SwingUtilities.updateComponentTreeUI(button_holder);
                 
                 // Debugging info
-                if (debug_settings.getValue(DebugTypes.DEBUG_ELAPSED_TIME)) {
+                if (debug_settings.getKeyValue(DebugTypes.DEBUG_ELAPSED_TIME)) {
                     System.out.println("IMG load elapsed time: " + (System.currentTimeMillis() - start_time) + "ms");
                 }
     
@@ -143,7 +143,7 @@ public class FileExplorerPanel extends JPanel {
     
         updateDebugInfo(total_time, added_imgs, removed_imgs);
 
-        if (debug_settings.getValue(DebugTypes.DEBUG_ELAPSED_TIME)) {
+        if (debug_settings.getKeyValue(DebugTypes.DEBUG_ELAPSED_TIME)) {
             System.out.println("Total time to load images: " + total_time + "ms | Images loaded: " + added_imgs + " | Removed images: " + removed_imgs);
         }
             
@@ -151,7 +151,7 @@ public class FileExplorerPanel extends JPanel {
 
     protected void updateDebugInfo(long total_time, int added_imgs, int removed_imgs) {
         ConfigDebugSettings debug_settings = (ConfigDebugSettings) this.manager_frame.getConfigs().getConfig(ManagerConfigKeys.DebugSettings);
-        if (!debug_settings.getValue(DebugTypes.DEBUG_MENU)) {
+        if (!debug_settings.getKeyValue(DebugTypes.DEBUG_MENU)) {
             return;
         }
         

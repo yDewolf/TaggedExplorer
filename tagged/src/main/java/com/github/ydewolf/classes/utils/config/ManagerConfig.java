@@ -16,12 +16,12 @@ public class ManagerConfig extends BaseManagerConfig {
 
     public boolean getDebug(DebugTypes type) {
         ConfigDebugSettings debug_settings = (ConfigDebugSettings) this.getConfig(ManagerConfigKeys.DebugSettings);
-        return debug_settings.getValue(type);
+        return debug_settings.getKeyValue(type);
     }
 
     public void setDebug(DebugTypes type, boolean value) {
         ConfigDebugSettings debug_settings = (ConfigDebugSettings) this.getConfig(ManagerConfigKeys.DebugSettings);
         // this.changed = true;
-        debug_settings.setValue(type, value);
+        debug_settings.setKeyValue(type, value);
     }
 }

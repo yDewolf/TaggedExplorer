@@ -21,15 +21,4 @@ public class ConfigDebugSettings extends BaseEnumConfiguration {
         this.values.put(DebugTypes.DEBUG_PANELS, false);
         this.values.put(DebugTypes.DEBUG_FILE_MANAGER, true);
     }
-
-    public void setValue(DebugTypes key, Boolean value) {
-        if (value != this.values.get(key)) {
-            this.changed = true;
-        }
-        this.values.put(key, value);
-    }
-
-    public Boolean getValue(DebugTypes key) {
-        return this.values.get(key);
-    }
 }

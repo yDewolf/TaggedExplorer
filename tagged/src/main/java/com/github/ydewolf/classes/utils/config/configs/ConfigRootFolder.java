@@ -16,8 +16,9 @@ public class ConfigRootFolder extends Configuration {
         this.capitalized_name = "Root Folder";
     }
 
-    public void setValue(File new_value) {
-        this.value = new_value;
+    @Override
+    public void setValue(Object new_value) {
+        this.value = (File) new_value;
     }
 
     @Override
