@@ -1,6 +1,5 @@
 package com.github.ydewolf;
 
-
 import com.github.ydewolf.swing.FileManagerFrame;
 
 public class Main {
