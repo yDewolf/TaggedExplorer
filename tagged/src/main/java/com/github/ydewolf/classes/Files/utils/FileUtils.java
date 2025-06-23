@@ -70,7 +70,7 @@ public class FileUtils {
         int scaled_width = (int) Math.ceil(original.getWidth() * scale);
         int scaled_height = (int) Math.ceil(original.getHeight() * scale);
 
-        BufferedImage scaled = new BufferedImage(scaled_width, scaled_height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage scaled = new BufferedImage(scaled_width, scaled_height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2dScale = scaled.createGraphics();
         g2dScale.drawImage(original.getScaledInstance(scaled_width, scaled_height, Image.SCALE_FAST), 0, 0, null);
         g2dScale.dispose();

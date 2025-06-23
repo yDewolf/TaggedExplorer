@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.github.ydewolf.classes.Files.FileRef;
+import com.github.ydewolf.classes.Files.utils.FileUtils;
 import com.github.ydewolf.enums.ManagerConfigKeys;
 import com.github.ydewolf.swing.FileManagerFrame;
 import com.github.ydewolf.swing.ui.FileInfoPanel.elements.ImageView;
@@ -108,17 +109,29 @@ public class FileInfoPanel extends JPanel {
     
     public void updateImage() {
         if (this.full_image == null) {
+            this.image_label.setIcon(null);
+            return;
+        }
+
+        File selected_file = this.manager.getSelectHandler().getSelectedFile().getInstance();
+        String extension = FileUtils.getFileExtension(selected_file);
+        if (extension.equals("gif")) {
+            this.image_label.setIcon(new ImageIcon(selected_file.getAbsolutePath()));
             return;
         }
 
         int newImageWidth = (int) (full_image.getWidth() * this.image_controls.getZoomLevel());
         int newImageHeight = (int) (full_image.getHeight() * this.image_controls.getZoomLevel());
 
-        BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, BufferedImage.TYPE_INT_RGB);
+        BufferedImage resizedImage = new BufferedImage(newImageWidth , newImageHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = resizedImage.createGraphics();
         g.drawImage(full_image, 0, 0, newImageWidth, newImageHeight, null);
         g.dispose();
 
         this.image_label.setIcon(new ImageIcon(resizedImage));
+    }
+
+    public FileManagerFrame getManagerFrame() {
+        return this.manager;
     }
 }

@@ -32,7 +32,7 @@ public class FileExplorerTopPanel extends JMenuBar {
         refresh_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                manager_frame.startUpdateThread();
+                manager_frame.updateFileManagerConfigs();
             }
         });
 

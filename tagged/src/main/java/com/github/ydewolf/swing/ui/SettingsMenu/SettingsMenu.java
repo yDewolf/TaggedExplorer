@@ -237,6 +237,7 @@ public class SettingsMenu extends JDialog {
         JLabel label = new JLabel(config.getName());
         panel.add(label);
 
+        @SuppressWarnings("rawtypes")
         Class<? extends Enum> enum_class = config.getValue().getClass();
 
         JComboBox<Enum<?>> dropdown = new JComboBox<>(enum_class.getEnumConstants());

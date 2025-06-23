@@ -63,6 +63,12 @@ public class FileExplorerPanel extends JPanel {
                 continue;
             }
         }
+
+        // If somehow the img_panels desynchronize with the JComponent
+        if (img_panels.keySet().size() < this.getComponentCount()) {
+            System.err.println("WARNING: Image panels doesn't represent the JComponent buttons | Rebuilding all the Image panels");
+            this.removeAll();
+        }
         
         int removed_imgs = 0;
         for (String path : paths_to_remove) {
@@ -86,18 +92,13 @@ public class FileExplorerPanel extends JPanel {
 
         ConfigDebugSettings debug_settings = (ConfigDebugSettings) this.manager_frame.getConfigs().getConfig(ManagerConfigKeys.DebugSettings);
         try {
-            int file_count = 0;
             for (String path : paths) {
                 // Exclude images that were already added
                 if (img_panels.containsKey(path)) {
                     continue;
                 }
 
-                if (file_count >= 5) {
-                    file_count = 0;
-                    Thread.sleep(0, 1);
-                }
-                file_count++;
+                Thread.sleep(0, 1);
     
                 // Generate image label
                 long start_time = System.currentTimeMillis();
@@ -138,7 +139,8 @@ public class FileExplorerPanel extends JPanel {
                 updateDebugInfo(total_time, added_imgs, removed_imgs);
             }
         } catch (InterruptedException e) {
-
+            System.out.println("Exiting update files thread");
+            Thread.currentThread().interrupt();
         }
     
         updateDebugInfo(total_time, added_imgs, removed_imgs);

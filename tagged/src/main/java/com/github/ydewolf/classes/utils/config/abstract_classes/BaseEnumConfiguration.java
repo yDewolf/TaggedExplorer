@@ -17,6 +17,7 @@ public abstract class BaseEnumConfiguration extends Configuration {
         return this.values;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void setValue(Object new_value) {
         this.values = (HashMap<Enum<?>, Boolean>) new_value;

@@ -125,11 +125,11 @@ public abstract class BaseFileManager {
     protected void updateChildFilesRecursive() {
         this.child_folders.clear();
         try {
-            Thread.sleep(0, 5);
+            Thread.sleep(0, 1);
 
             ArrayList<FileRef> all_files = this.getChildrenRecursive(root_folder);
             
-            Thread.sleep(0, 5);
+            Thread.sleep(0, 1);
             // Remove files that shouldn't be there anymore
             ArrayList<String> paths_to_remove = new ArrayList<>();
             for (FileRef file : this.child_files.values()) {
@@ -177,6 +177,7 @@ public abstract class BaseFileManager {
                     // Add directories so they can be also checked
                     if (pathname.isDirectory()) {
                         if (folder_count >= 20) {
+                            folder_count = 0;
                             Thread.sleep(0, 1);
                         }
                         folder_count++;
@@ -211,7 +212,7 @@ public abstract class BaseFileManager {
         try {
             int folder_count = 0;
             for (File directory : folders_to_look) {
-                if (folder_count >= 10) {
+                if (folder_count >= 20) {
                     folder_count = 0;
                     Thread.sleep(0, 1);
                 }
@@ -242,9 +243,9 @@ public abstract class BaseFileManager {
 
     protected boolean validateFile(File file) {
         // Skip files that are already in the child_files map
-        if (this.child_files.containsKey(file.getAbsolutePath())) {
-            return false;
-        }
+        // if (this.child_files.containsKey(file.getAbsolutePath())) {
+        //     return false;
+        // }
         
         return FileUtils.checkFileExtension(file.getName(), this.VALID_EXTENSIONS, this.EXCLUDED_EXTENSIONS);
 

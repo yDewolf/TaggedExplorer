@@ -1,13 +1,16 @@
 package com.github.ydewolf.swing.ui.FileInfoPanel.elements;
 
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.github.ydewolf.classes.Files.FileRef;
 import com.github.ydewolf.swing.ui.FileInfoPanel.FileInfoPanel;
 
 public class ImageControls extends JPanel {
@@ -51,6 +54,33 @@ public class ImageControls extends JPanel {
             });
             this.add(zoom_out);
         }
+
+        JButton open_in_desktop = new JButton("Open File");
+        this.add(open_in_desktop);
+        open_in_desktop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                FileRef selected_file = info_panel.getManagerFrame().getSelectHandler().getSelectedFile();
+                if (selected_file == null) {
+                    return;
+                }
+
+                if (!Desktop.isDesktopSupported()) {
+                    return;
+                }
+
+                Desktop desktop = Desktop.getDesktop();
+                try {
+                    desktop.open(selected_file.getInstance());
+
+                } catch (IOException e) {
+                    System.err.println("Error opening directory: " + e.getMessage());
+                    e.printStackTrace();
+                } catch (IllegalArgumentException iae) {
+                    System.err.println("Directory not found or invalid path: " + iae.getMessage());
+                }
+            }
+        });
     }
 
     public void updateZoomLevel(double new_zoom_level) {

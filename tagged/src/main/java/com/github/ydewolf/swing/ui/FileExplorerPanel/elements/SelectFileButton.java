@@ -1,7 +1,10 @@
 package com.github.ydewolf.swing.ui.FileExplorerPanel.elements;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +12,7 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import com.github.ydewolf.classes.Files.utils.FileUtils;
 import com.github.ydewolf.static_classes.FileFormats;
@@ -42,6 +46,16 @@ public class SelectFileButton extends JButton {
         this.name_label = new JLabel();
         name_label.setPreferredSize(new Dimension(target_width, 20));
         this.add(name_label, BorderLayout.SOUTH);
+
+        JPanel extension_holder = new JPanel(new FlowLayout());
+        extension_holder.setOpaque(false);
+        this.add(extension_holder, BorderLayout.NORTH);
+
+        JLabel extension_label = new JLabel(FileUtils.getFileExtension(file));
+        extension_label.setForeground(Color.darkGray);
+        extension_label.setFont(getFont().deriveFont(Font.BOLD));
+        extension_label.setFont(getFont().deriveFont(16f));
+        extension_holder.add(extension_label);
 
         this.loadFile(file);
     }
