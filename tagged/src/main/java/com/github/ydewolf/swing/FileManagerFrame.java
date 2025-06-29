@@ -39,7 +39,7 @@ public class FileManagerFrame extends JFrame {
     protected ManagerConfig config;
 
     protected final String WINDOW_TITLE = "TaggedExplorer";
-    protected final String VERSION_TAG = "v0.5.6-beta";
+    protected final String VERSION_TAG = "v0.5.7-beta";
 
     // Scales only the window size
     // Also updates SIZE_X and SIZE_Y

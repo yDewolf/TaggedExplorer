@@ -81,6 +81,32 @@ public class ImageControls extends JPanel {
                 }
             }
         });
+        JButton open_folder = new JButton("Open Folder");
+        this.add(open_folder);
+        open_folder.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                FileRef selected_file = info_panel.getManagerFrame().getSelectHandler().getSelectedFile();
+                if (selected_file == null) {
+                    return;
+                }
+
+                if (!Desktop.isDesktopSupported()) {
+                    return;
+                }
+
+                Desktop desktop = Desktop.getDesktop();
+                try {
+                    desktop.open(selected_file.getInstance().getParentFile());
+
+                } catch (IOException e) {
+                    System.err.println("Error opening directory: " + e.getMessage());
+                    e.printStackTrace();
+                } catch (IllegalArgumentException iae) {
+                    System.err.println("Directory not found or invalid path: " + iae.getMessage());
+                }
+            }
+        });
     }
 
     public void updateZoomLevel(double new_zoom_level) {
